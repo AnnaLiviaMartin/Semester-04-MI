@@ -74,6 +74,7 @@ if __name__ == '__main__':
 
     # TODO 4:
     # - define the interpolation method given both polygons and an interpolation parameter t in [0, 1]
+    
     def interpolate(p1, p2, t):
         """
         :param      np.array[n, 2]  p1:     n * (x, y) points of polygon A
@@ -82,9 +83,11 @@ if __name__ == '__main__':
 
         :return     np.array[n, 2]  p_out:  Interpolated output points
         """
-        interpolated_points = p1 * (1 - t) + p2 * t
-
-        return p1
+        for i in range(len(p1)):
+            x1, y1 = p1[i][0], p1[i][1]
+            x2, y2 = p2[i][0], p2[i][1]
+            p1[i] = [(x1 - x2) * t, (y1 - y2) * t]
+        return np.array(p1)
 
     # instantiate a scene
     scene = Scene(width, height, polygon_A, polygon_B, "Morphing Template", interpolation_fct=interpolate)
