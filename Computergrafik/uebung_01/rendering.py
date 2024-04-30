@@ -32,8 +32,6 @@ import numpy as np
 import moderngl as mgl
 import OpenGL.GL as gl
 import os
-
-
 from imgui.integrations.glfw import GlfwRenderer
 
 
