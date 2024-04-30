@@ -66,6 +66,7 @@ if __name__ == '__main__':
     num_points = max(len(polygon_A), len(polygon_B))
     polygon_A = np.resize(polygon_A, (num_points, 2))
     polygon_B = np.resize(polygon_B, (num_points, 2))
+    polygon_copy = polygon_A
     print(polygon_A)
     print(polygon_B)
 
@@ -86,8 +87,11 @@ if __name__ == '__main__':
         for i in range(len(p1)):
             x1, y1 = p1[i][0], p1[i][1]
             x2, y2 = p2[i][0], p2[i][1]
-            p1[i] = [(x1 - x2) * t, (y1 - y2) * t]
-        return np.array(p1)
+            interpolated_x = (x1 - x2) * t         # eigentlich ist das so eine gerade: laufen tut es aber so nicht x2 + (x1 - x2) * t
+            interpolated_y = (y1 - y2) * t
+            polygon_copy[i] = [interpolated_x, interpolated_y]
+            #p1[i] = [interpolated_x, interpolated_y]
+        return np.array(polygon_copy)
 
     # instantiate a scene
     scene = Scene(width, height, polygon_A, polygon_B, "Morphing Template", interpolation_fct=interpolate)
