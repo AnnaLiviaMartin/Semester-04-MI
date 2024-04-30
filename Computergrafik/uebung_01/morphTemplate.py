@@ -46,9 +46,28 @@ if __name__ == '__main__':
 
     # TODO 1:
     # - parse polygons from files to numpy arrays with shape [n, 2] and replace polygon_A and polygon_B
+    def read_polygon_from_file(filename):
+        with open(filename, 'r') as file:
+            lines = file.readlines()
+            points = []
+            for line in lines:
+                x, y = map(float, line.strip().split())
+                points.append([x, y])
+            return np.array(points)
+
+    # Read polygons from files
+    polygon_A = read_polygon_from_file(sys.argv[1])
+    polygon_B = read_polygon_from_file(sys.argv[2])
+    print(polygon_A)
+    print(polygon_B)
 
     # TODO 2:
     # - make both polygons contain the same number of points
+    num_points = max(len(polygon_A), len(polygon_B))
+    polygon_A = np.resize(polygon_A, (num_points, 2))
+    polygon_B = np.resize(polygon_B, (num_points, 2))
+    print(polygon_A)
+    print(polygon_B)
 
     # TODO 3:
     # - transform from local into global coordinate system
@@ -63,6 +82,7 @@ if __name__ == '__main__':
 
         :return     np.array[n, 2]  p_out:  Interpolated output points
         """
+        interpolated_points = p1 * (1 - t) + p2 * t
 
         return p1
 
