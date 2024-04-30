@@ -75,7 +75,6 @@ if __name__ == '__main__':
 
     # TODO 4:
     # - define the interpolation method given both polygons and an interpolation parameter t in [0, 1]
-    
     def interpolate(p1, p2, t):
         """
         :param      np.array[n, 2]  p1:     n * (x, y) points of polygon A
@@ -90,7 +89,6 @@ if __name__ == '__main__':
             interpolated_x = (x1 - x2) * t         # eigentlich ist das so eine gerade: laufen tut es aber so nicht x2 + (x1 - x2) * t
             interpolated_y = (y1 - y2) * t
             polygon_copy[i] = [interpolated_x, interpolated_y]
-            #p1[i] = [interpolated_x, interpolated_y]
         return np.array(polygon_copy)
 
     # instantiate a scene
