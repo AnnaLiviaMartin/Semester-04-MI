@@ -64,6 +64,7 @@ if __name__ == '__main__':
     # TODO 2:
     # - make both polygons contain the same number of points
     num_points = max(len(polygon_A), len(polygon_B))
+    #np.concatenate()
     polygon_A = np.resize(polygon_A, (num_points, 2))
     polygon_B = np.resize(polygon_B, (num_points, 2))
     polygon_copy = polygon_A
@@ -72,6 +73,9 @@ if __name__ == '__main__':
 
     # TODO 3:
     # - transform from local into global coordinate system
+    scale = 500
+    polygon_A = polygon_A * scale
+    polygon_B = polygon_B * scale
 
     # TODO 4:
     # - define the interpolation method given both polygons and an interpolation parameter t in [0, 1]
@@ -83,13 +87,7 @@ if __name__ == '__main__':
 
         :return     np.array[n, 2]  p_out:  Interpolated output points
         """
-        for i in range(len(p1)):
-            x1, y1 = p1[i][0], p1[i][1]
-            x2, y2 = p2[i][0], p2[i][1]
-            interpolated_x = (x1 - x2) * t         # eigentlich ist das so eine gerade: laufen tut es aber so nicht x2 + (x1 - x2) * t
-            interpolated_y = (y1 - y2) * t
-            polygon_copy[i] = [interpolated_x, interpolated_y]
-        return np.array(polygon_copy)
+        return p1 * (1 - t) + p2 * t
 
     # instantiate a scene
     scene = Scene(width, height, polygon_A, polygon_B, "Morphing Template", interpolation_fct=interpolate)
