@@ -2,12 +2,12 @@ import numpy as np
 from PIL import Image
 
 # image width , height
-w, h = 600, 400
+width, height= 600, 400
 
 # generate a gray scale (one channel) noise image
-gs_img1 = np.random.rand(w, h)
-gs_img2 = np.random.rand(w, h)
-gs_img3 = np.random.rand(w, h)
+gs_img1 = np.random.rand(width, height)
+gs_img2 = np.random.rand(width, height)
+gs_img3 = np.random.rand(width, height)
 
 # scale image values to [0,250]
 gs_img1 *= 255
@@ -19,7 +19,7 @@ r = Image.fromarray(gs_img1.astype(np.uint8).T)
 g = Image.fromarray(gs_img2.astype(np.uint8).T)
 b = Image.fromarray(gs_img3.astype(np.uint8).T)
 
-# make GRB image (here all three channels are the same)
+# make RGB image (here all three channels are the same)
 rgb = [r, g, b]
 
 # merge channels and save image
