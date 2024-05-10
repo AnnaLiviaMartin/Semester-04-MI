@@ -45,7 +45,7 @@ class Plane(Obj):
         self.c = c
         self.d = n * c
 
-    def intersectionParamater(self, o):
+    def intersectionParamater(self, o, d):
         p2 = getTForRayPlaneIntersection(self.n, self.c, o, self.d)
         if p2 is None:
             return None
@@ -152,7 +152,7 @@ def getTForRaySpereIntersection(c, o, d, r):
         return None  # schneidet kreis nicht
 
     t1 = cod + getWurzel(wurzelInhalt)
-    t2 = cod - getWurzel((cod * cod) - (np.dot(oc, oc) - (r * r)))
+    t2 = cod - getWurzel((cod ** 2) - (np.dot(oc, oc) - (r ** 2)))
 
     if t1 == 0 and t2 == 0:
         return 0  # berührt kreis an einem punkt
@@ -167,7 +167,9 @@ def getTForRaySpereIntersection(c, o, d, r):
 
 def getTForRayPlaneIntersection(n, c, o, d):
     """Strahl schneidet Ebene"""
-    t = (n * (c - o)) / (n * d)
+    upper = np.dot(n, (c - o))
+    lower = np.dot(n, d)
+    t = upper / lower
     return t if t > 0 else None
 
 
@@ -207,9 +209,11 @@ def raytracer(image_width, image_height):
     triangle = Triangle(np.array([1, 2, 4]), np.array([2.3, 0.4, 4]), np.array([1.3, 5, 3]))
     #triangle2 = Triangle(np.array([1, 2, 4]), np.array([1, 1, 1]), np.array([5, 5, 5]))
     triangle2 = Triangle(np.array([2, 2, 6]), np.array([1, 1, 1]), np.array([0.8, 0.8, 0.8]))
+    plane = Plane(np.array([30, 20, 10]), np.array([1, 1, 1]))
     #objectlist.append(sphere)
     #objectlist.append(triangle)
     objectlist.append(triangle2)
+    #objectlist.append(plane)
     image = Image.new("RGB", (image_width, image_height))
 
     for x in range(image_width):
