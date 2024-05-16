@@ -193,4 +193,4 @@ if __name__ == '__main__':
 
         crgb = [Image.fromarray((255 * np.clip(c, 0, 1).reshape((h, w))).astype(np.uint8), "L") for c in color.components()]
         #Image.merge("RGB", crgb).resize((D, D), Image.BICUBIC).save("%04d.png" % (f + 1))
-        Image.merge("RGB", crgb).resize((D, D), Image.BICUBIC).save("rays.png")
+        Image.merge("RGB", crgb).resize((D, D), Image.BICUBIC).save("./pictures/rays.png")

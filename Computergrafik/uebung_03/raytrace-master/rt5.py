@@ -121,7 +121,7 @@ color = evaluator(mm, x, y)
 print(f"Took {(time.time() - t0):.3f} s")
 
 frgb = [Image.fromarray((255 * np.clip(c, 0, 1).reshape((h, w))).astype(np.uint8), "L") for c in color.components()]
-Image.merge("RGB", frgb).save("rt5.png")
+Image.merge("RGB", frgb).save("./pictures/rt5.png")
 
 mem = set()
 

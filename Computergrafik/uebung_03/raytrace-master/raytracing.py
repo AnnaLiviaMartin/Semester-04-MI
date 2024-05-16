@@ -157,4 +157,4 @@ for i, x in enumerate(np.linspace(S[0], S[2], w)):
 
 im = Image.fromarray((255 * img).astype(np.uint8), "RGB")
 #im.save("fig.png")
-im.save("raytracing.png")
+im.save("./pictures/raytracing.png")

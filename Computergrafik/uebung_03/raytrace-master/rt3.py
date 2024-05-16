@@ -138,4 +138,4 @@ color = raytrace(E, (Q - E).norm(), scene)
 print ("Took", time.time() - t0)
 
 rgb = [Image.fromarray((255 * np.clip(c, 0, 1).reshape((h, w))).astype(np.uint8), "L") for c in color.components()]
-Image.merge("RGB", rgb).save("rt3.png")
+Image.merge("RGB", rgb).save("./pictures/rt3.png")

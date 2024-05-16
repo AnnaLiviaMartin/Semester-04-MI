@@ -43,7 +43,7 @@ def raytrace(O, D, scene, bounce = 0):
         _rgb = [Image.fromarray((255 * np.clip(c, 0, 1).reshape((h, w))).astype(np.uint8), "L") for c in cc.components()]
         global gen
         #Image.merge("RGB", _rgb).save("p%02d.png" % gen)
-        Image.merge("RGB", _rgb).save("watch1.png")
+        Image.merge("RGB", _rgb).save("./pictures/watch1.png")
         gen += 1
     return color
 
@@ -124,4 +124,4 @@ print ("Took", time.time() - t0)
 
 rgb = [Image.fromarray((255 * np.clip(c, 0, 1).reshape((h, w))).astype(np.uint8), "L") for c in color.components()]
 #Image.merge("RGB", rgb).save("fig.png")
-Image.merge("RGB", rgb).save("watch2.png")
+Image.merge("RGB", rgb).save("./pictures/watch2.png")

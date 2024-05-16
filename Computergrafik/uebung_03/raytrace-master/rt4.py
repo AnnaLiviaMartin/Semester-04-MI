@@ -169,4 +169,4 @@ if __name__ == '__main__':
     ]
 
     r = float(w) / h
-    main(w, h, -1., 1. / r + .25, 1., -1. / r + .25, scene, "rt4.png")
+    main(w, h, -1., 1. / r + .25, 1., -1. / r + .25, scene, "./pictures/rt4.png")

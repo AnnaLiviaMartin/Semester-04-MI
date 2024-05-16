@@ -1,4 +1,4 @@
-import Image
+from PIL import Image
 import numpy as np
 import time
 import numbers
@@ -54,4 +54,4 @@ color = (c0 * g) + c1 * (1 - g)
 # color.y = np.where(g > 0.5, 0.0, 1.0)
 
 rgb = [Image.fromarray((255 * c.reshape((h, w))).astype(np.uint8), "L") for c in color.components()]
-Image.merge("RGB", rgb).save("gauss.png")
+Image.merge("RGB", rgb).save("./pictures/gauss.png")
