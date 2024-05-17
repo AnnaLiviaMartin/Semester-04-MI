@@ -121,10 +121,12 @@ class CheckeredSphere(Sphere):
 
 def raytracing_Scene():
     scene = [
-        Sphere(vec3(.75, .1, 1), .6, rgb(0, 0, 1)),
-        Sphere(vec3(-.75, .1, 2.25), .6, rgb(.5, .223, .5)),
-        Sphere(vec3(-2.75, .1, 3.5), .6, rgb(1, .572, .184)),
+        #Sphere(vec3(.75, .1, 1), .6, rgb(0, 0, 1)),
+        Sphere(vec3(0, 1.1, 1.5), .5, rgb(0, 0, 1)),  # Obere Kugel
+        Sphere(vec3(-0.5, .1, 1.5), .5, rgb(.5, .223, .5)),  # Linke Kugel
+        Sphere(vec3(0.5, 0.1, 1.5), .5, rgb(1, .572, .184)),  # Rechte Kugel
         CheckeredSphere(vec3(0, -99999.5, 0), 99999, rgb(.75, .75, .75), 0.25),
+        #Sphere(vec3(-2.75, .1, 3.5), .6, rgb(1, .572, .184)),
     ]
 
     r = float(w) / h
