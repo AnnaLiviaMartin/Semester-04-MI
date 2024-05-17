@@ -119,7 +119,6 @@ class CheckeredSphere(Sphere):
         checker = ((M.x * 2).astype(int) % 2) == ((M.z * 2).astype(int) % 2)
         return self.diffuse * checker
 
-
 def test_scene():
     scene = [
         Sphere(vec3(.75, .1, 1), .6, vec3(0, 0, 1)),
@@ -140,6 +139,10 @@ def test_scene():
     print ("Took", time.time() - t0)
 
     rgb = [Image.fromarray((255 * np.clip(c, 0, 1).reshape((h, w))).astype(np.uint8), "L") for c in color.components()]
-    im = Image.merge("RGB", rgb)#.save("rt3_raytracerTemplate.png")
+    im = Image.merge("RGB", rgb).save("./pictures/rt3_raytracerTemplate.png")
     #im.show()
     return np.array(im)
+
+# main function
+if __name__ == '__main__':
+    test_scene()
