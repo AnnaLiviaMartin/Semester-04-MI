@@ -42,8 +42,9 @@ class RaytracerForPic:
         print("Took", time.time() - t0)
 
         rgb_channels = [Image.fromarray((255 * np.clip(c, 0, 1).reshape((self.h, self.w))).astype(np.uint8), "L") for c in color.components()]
-        im = Image.merge("RGB", rgb_channels).save("./pictures/rt3.png")
-        return np.array(im)
+        im = Image.merge("RGB", rgb_channels)#.save("./pictures/rt3.png")
+        im = np.array(im)
+        return im
 
 
 def extract(cond, x):
