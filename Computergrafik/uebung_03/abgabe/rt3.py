@@ -9,6 +9,7 @@ class RaytracerForPic:
     """this is the raytracer which generates one image"""
 
     def __init__(self, width, height, L, E, FARAWAY):
+        self.scene = None
         self.screen_size = (width, height)  # Screen size
         self.w = width
         self.h = height
@@ -17,8 +18,7 @@ class RaytracerForPic:
         self.FARAWAY = FARAWAY  # an implausibly huge distance
 
     def raytracing_Scene(self):
-        scene = [
-            # Sphere(vec3(.75, .1, 1), .6, rgb(0, 0, 1)),
+        self.scene = [
             Sphere(vec3(0, 1.1, 1.5), .5, rgb(0, 0, 1), self.FARAWAY, self.w, self.h, vec3(5, 5, -10),
                    vec3(0, 0.35, -1)),  # Obere Kugel
             Sphere(vec3(-0.5, .1, 1.5), .5, rgb(.5, .223, .5), self.FARAWAY, self.w, self.h, vec3(5, 5, -10),
@@ -27,7 +27,6 @@ class RaytracerForPic:
                    vec3(0, 0.35, -1)),  # Rechte Kugel
             CheckeredSphere(vec3(0, -99999.5, 0), 99999, rgb(.75, .75, .75), self.FARAWAY, self.w, self.h,
                             vec3(5, 5, -10), vec3(0, 0.35, -1), 0.25),
-            # Sphere(vec3(-2.75, .1, 3.5), .6, rgb(1, .572, .184)),
         ]
 
         r = float(self.w) / self.h
@@ -38,7 +37,7 @@ class RaytracerForPic:
 
         t0 = time.time()
         Q = vec3(x, y, 0)
-        color = raytrace(self.E, (Q - self.E).norm(), scene, self.FARAWAY)
+        color = raytrace(self.E, (Q - self.E).norm(), self.scene, self.FARAWAY)
         print("Took", time.time() - t0)
 
         rgb_channels = [Image.fromarray((255 * np.clip(c, 0, 1).reshape((self.h, self.w))).astype(np.uint8), "L") for c in color.components()]
@@ -46,6 +45,13 @@ class RaytracerForPic:
         im = np.array(im)
         return im
 
+    def schwerpunkt(self):
+        points = [
+            np.array([self.scene[0].c.x, self.scene[0].c.y, self.scene[0].c.z]),  # Obere Kugel
+            np.array([self.scene[1].c.x, self.scene[1].c.y, self.scene[1].c.z]),  # Linke Kugel
+            np.array([self.scene[2].c.x, self.scene[2].c.y, self.scene[2].c.z])  # Rechte Kugel
+        ]
+        return np.mean(points, axis=0)
 
 def extract(cond, x):
     if isinstance(x, numbers.Number):
@@ -94,12 +100,6 @@ class vec3():
 
 
 rgb = vec3
-
-
-# (w, h) = (400, 300)  # Screen size
-# L = vec3(5, 5, -10)  # Point light position
-# E = vec3(0, 0.35, -1)  # Eye position
-# FARAWAY = 1.0e39  # an implausibly huge distance
 
 
 def raytrace(O, D, scene, FARAWAY, bounce=0):

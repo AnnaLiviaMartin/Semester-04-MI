@@ -30,29 +30,80 @@ import numpy as np
 
 class RayTracer:
 
+    # TODO change Materialeigenschaften of Kugeln
     def __init__(self, widthPic, heightPic):
         self.widthPic = widthPic
         self.heightPic = heightPic
-        self.rt = RaytracerForPic(self.widthPic, self.heightPic, vec3(5, 5, -10), vec3(0, 0.35, -1), 1.0e39)
-        # TODO: setup your ray tracer
+        self.L = vec3(5, 5, -10)
+        self.E = vec3(0, 0.35, -1)
+        self.rt = RaytracerForPic(self.widthPic, self.heightPic, self.L, self.E, 1.0e39)
 
     def resize(self, new_width, new_height):
         self.widthPic = new_width
         self.heightPic = new_height
         self.rt = RaytracerForPic(self.widthPic, self.heightPic, vec3(5, 5, -10), vec3(0, 0.35, -1), 1.0e39)
-        # TODO: modify scene accordingly
+
 
     def rotate_pos(self):
         # TODO: modify scene accordingly
         pass
+        """
+        Rotate a vector around a given point in 3D space.
+
+        Parameters:
+        vector : np.array
+            The vector to be rotated.
+        point : np.array
+            The point around which to rotate the vector.
+        angle : float
+            The angle of rotation in radians.
+        axis : str
+            The axis of rotation ('x', 'y', 'z').
+
+        Returns:
+        np.array
+            The rotated vector.
+        """
+        point = self.rt.schwerpunkt()
+        vector = self.E
+        vector = np.array([vector.x, vector.y, vector.z])
+        angle = np.pi / 2
+        axis = 'z'
+
+        # Translate the vector so that the point is at the origin
+        vector_translated = vector - point
+
+        # Rotation matrices
+        if axis == 'x':
+            R = np.array([[1, 0, 0],
+                          [0, np.cos(angle), -np.sin(angle)],
+                          [0, np.sin(angle), np.cos(angle)]])
+        elif axis == 'y':
+            R = np.array([[np.cos(angle), 0, np.sin(angle)],
+                          [0, 1, 0],
+                          [-np.sin(angle), 0, np.cos(angle)]])
+        elif axis == 'z':
+            R = np.array([[np.cos(angle), -np.sin(angle), 0],
+                          [np.sin(angle), np.cos(angle), 0],
+                          [0, 0, 1]])
+        else:
+            raise ValueError("Axis must be 'x', 'y' or 'z'")
+
+        # Rotate the translated vector
+        vector_rotated = np.dot(R, vector_translated)
+
+        # Translate the vector back
+        vector_final = vector_rotated + point
+        vector_final = vec3(vector_final[0], vector_final[1], vector_final[2])
+        self.rt.E = vector_final
+        self.E = vector_final
+        ray_tracer.render()
 
     def rotate_neg(self):
         # TODO: modify scene accordingly
         pass
 
     def render(self):
-        # TODO: Replace Dummy Data with Ray Traced Data
-        # return np.random.randint(0, 255, (self.heightPic, self.widthPic, 3), dtype=np.uint8)
         return self.rt.raytracing_Scene()
 
 
