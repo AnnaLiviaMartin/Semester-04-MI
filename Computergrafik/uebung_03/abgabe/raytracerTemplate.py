@@ -35,14 +35,12 @@ class RayTracer:
     def __init__(self, widthPic, heightPic):
         self.widthPic = widthPic
         self.heightPic = heightPic
-        self.L = vec3(5, 5, -10)
-        self.E = vec3(0, 0.35, -1)
-        self.rt = RaytracerForPic(self.widthPic, self.heightPic, self.L, self.E, 1.0e39)
+        self.rt = RaytracerForPic(self.widthPic, self.heightPic)
 
     def resize(self, new_width, new_height):
         self.widthPic = new_width
         self.heightPic = new_height
-        self.rt = RaytracerForPic(self.widthPic, self.heightPic, vec3(5, 5, -10), vec3(0, 0.35, -1), 1.0e39)
+        self.rt = RaytracerForPic(self.widthPic, self.heightPic)
 
     def rotate_pos(self):
         # angle around which to rotate
@@ -72,7 +70,7 @@ class RayTracer:
                 # set new value
                 obj.c = vec3(ch_new[:3][0], ch_new[:3][1], ch_new[:3][2])
                 self.rt.scene_objects[i] = obj
-            else:
+            elif isinstance(obj, Triangle):
                 obj: Triangle
 
                 # homogeneous center of each object (sphere)
@@ -90,7 +88,7 @@ class RayTracer:
                 self.rt.scene_objects[i] = obj
 
         # rerender
-        self.rt.raytracing_Scene()
+        self.rt.render()
 
     def rotate_neg(self):
         # angle around which to rotate
@@ -108,23 +106,40 @@ class RayTracer:
         # application to the spheres
         for i in range(len(self.rt.scene_objects)):
             obj = self.rt.scene_objects[i]
-            obj: Sphere
-            # homogeneous center of each object (sphere)
-            ch = np.array([obj.c.x, obj.c.y, obj.c.z, 1])
-            print(f"NEW SPHERE\n")
-            print(f"Original center (homogeneous): {ch}\n")
-            # calculate new center after rotation
-            ch_new = M @ ch
-            print(f"New center (homogeneous): {ch_new}\n")
-            # set new value
-            obj.c = vec3(ch_new[:3][0], ch_new[:3][1], ch_new[:3][2])
-            self.rt.scene_objects[i] = obj
+
+            if isinstance(obj, Sphere):
+                obj: Sphere
+                # homogeneous center of each object (sphere)
+                ch = np.array([obj.c.x, obj.c.y, obj.c.z, 1])
+
+                # calculate new center after rotation
+                ch_new = M @ ch
+
+                # set new value
+                obj.c = vec3(ch_new[:3][0], ch_new[:3][1], ch_new[:3][2])
+                self.rt.scene_objects[i] = obj
+            elif isinstance(obj, Triangle):
+                obj: Triangle
+
+                # homogeneous center of each object (sphere)
+                ch = np.array([obj.A.x, obj.A.y, obj.A.z, 1])
+
+                # calculate new points after rotation
+                ch_A = M @ np.array([obj.A.x, obj.A.y, obj.A.z, 1])
+                ch_B = M @ np.array([obj.B.x, obj.B.y, obj.B.z, 1])
+                ch_C = M @ np.array([obj.C.x, obj.C.y, obj.C.z, 1])
+
+                # set new value
+                obj.A = vec3(ch_A[0], ch_A[1], ch_A[2])
+                obj.B = vec3(ch_B[0], ch_B[1], ch_B[2])
+                obj.C = vec3(ch_C[0], ch_C[1], ch_C[2])
+                self.rt.scene_objects[i] = obj
 
         # rerender
-        self.rt.raytracing_Scene()
+        self.rt.render()
 
     def render(self):
-        return self.rt.raytracing_Scene()
+        return self.rt.render()
 
 
 # main function
