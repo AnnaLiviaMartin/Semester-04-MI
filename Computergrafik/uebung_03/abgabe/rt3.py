@@ -17,12 +17,9 @@ class RaytracerForPic:
         self.E = E  # Eye position
         self.FARAWAY = FARAWAY  # an implausibly huge distance
         self.scene_objects = [
-            Sphere(vec3(0, 1.1, 1.5), .5, rgb(0, 0, 1), self.FARAWAY, self.w, self.h, vec3(5, 5, -10),
-                   vec3(0, 0.35, -1)),  # Obere Kugel
-            Sphere(vec3(-0.5, .1, 1.5), .5, rgb(.5, .223, .5), self.FARAWAY, self.w, self.h, vec3(5, 5, -10),
-                   vec3(0, 0.35, -1)),  # Linke Kugel
-            Sphere(vec3(0.5, 0.1, 1.5), .5, rgb(1, .572, .184), self.FARAWAY, self.w, self.h, vec3(5, 5, -10),
-                   vec3(0, 0.35, -1)),  # Rechte Kugel
+            Sphere(vec3(.5, 0, 0), .25, rgb(0, 0, 1), self.FARAWAY, self.w, self.h, vec3(5, 5, -10), vec3(0, 0.35, -1)),  # Rechte Kugel
+            Sphere(vec3(0, .5, 0), .25, rgb(.5, .223, .5), self.FARAWAY, self.w, self.h, vec3(5, 5, -10), vec3(0, 0.35, -1)),  # Obere Kugel
+            Sphere(vec3(-.5, 0, 0), .25, rgb(1, .572, .184), self.FARAWAY, self.w, self.h, vec3(5, 5, -10), vec3(0, 0.35, -1)),  # Linke Kugel
             CheckeredSphere(vec3(0, -99999.5, 0), 99999, rgb(.75, .75, .75), self.FARAWAY, self.w, self.h,
                             vec3(5, 5, -10), vec3(0, 0.35, -1), 0.25),
         ]
