@@ -9,16 +9,14 @@ class RaytracerForPic:
     """this is the raytracer which generates one image"""
 
     def __init__(self, width, height, L, E, FARAWAY):
-        self.scene = None
+        self.scene_objects = None
         self.screen_size = (width, height)  # Screen size
         self.w = width
         self.h = height
         self.L = L  # Point light position
         self.E = E  # Eye position
         self.FARAWAY = FARAWAY  # an implausibly huge distance
-
-    def raytracing_Scene(self):
-        self.scene = [
+        self.scene_objects = [
             Sphere(vec3(0, 1.1, 1.5), .5, rgb(0, 0, 1), self.FARAWAY, self.w, self.h, vec3(5, 5, -10),
                    vec3(0, 0.35, -1)),  # Obere Kugel
             Sphere(vec3(-0.5, .1, 1.5), .5, rgb(.5, .223, .5), self.FARAWAY, self.w, self.h, vec3(5, 5, -10),
@@ -29,6 +27,7 @@ class RaytracerForPic:
                             vec3(5, 5, -10), vec3(0, 0.35, -1), 0.25),
         ]
 
+    def raytracing_Scene(self):
         r = float(self.w) / self.h
         # Screen coordinates: x0, y0, x1, y1.
         S = (-1, 1 / r + .25, 1, -1 / r + .25)
@@ -37,21 +36,24 @@ class RaytracerForPic:
 
         t0 = time.time()
         Q = vec3(x, y, 0)
-        color = raytrace(self.E, (Q - self.E).norm(), self.scene, self.FARAWAY)
+        color = raytrace(self.E, (Q - self.E).norm(), self.scene_objects, self.FARAWAY)
         print("Took", time.time() - t0)
 
-        rgb_channels = [Image.fromarray((255 * np.clip(c, 0, 1).reshape((self.h, self.w))).astype(np.uint8), "L") for c in color.components()]
-        im = Image.merge("RGB", rgb_channels)#.save("./pictures/rt3.png")
+        rgb_channels = [Image.fromarray((255 * np.clip(c, 0, 1).reshape((self.h, self.w))).astype(np.uint8), "L") for c
+                        in color.components()]
+        im = Image.merge("RGB", rgb_channels)  # .save("./pictures/rt3.png")
         im = np.array(im)
         return im
 
     def schwerpunkt(self):
         points = [
-            np.array([self.scene[0].c.x, self.scene[0].c.y, self.scene[0].c.z]),  # Obere Kugel
-            np.array([self.scene[1].c.x, self.scene[1].c.y, self.scene[1].c.z]),  # Linke Kugel
-            np.array([self.scene[2].c.x, self.scene[2].c.y, self.scene[2].c.z])  # Rechte Kugel
+            np.array([self.scene_objects[0].c.x, self.scene_objects[0].c.y, self.scene_objects[0].c.z]),  # Obere Kugel
+            np.array([self.scene_objects[1].c.x, self.scene_objects[1].c.y, self.scene_objects[1].c.z]),  # Linke Kugel
+            np.array([self.scene_objects[2].c.x, self.scene_objects[2].c.y, self.scene_objects[2].c.z])  # Rechte Kugel
         ]
-        return np.mean(points, axis=0)
+        length = len(points)
+        return np.array([(1 / length) + (points[0][0] + points[0][1] + points[0][2]), (1 / length) + (points[1][0] + points[1][1] + points[1][2]), (1 / length) + (points[2][0] + points[2][1] + points[2][2])])
+
 
 def extract(cond, x):
     if isinstance(x, numbers.Number):
