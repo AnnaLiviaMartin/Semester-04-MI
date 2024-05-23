@@ -83,7 +83,7 @@ def raytrace(O, D, scene, bounce=0):
 
 
 class Sphere:
-    def __init__(self, center, r, diffuse, width, height, mirror=0.2):
+    def __init__(self, center, r, diffuse, width, height, mirror):
         self.c = center
         self.r = r
         self.diffuse = diffuse
@@ -128,7 +128,7 @@ class Sphere:
         # Reflection
         if bounce < 2:
             rayD = (D - N * 2 * D.dot(N)).norm()
-            color += raytrace(nudged, rayD, scene, bounce + 1, FARAWAY) * self.mirror
+            color += raytrace(nudged, rayD, scene, bounce + 1) * self.mirror
 
         # Blinn-Phong shading (specular)
         phong = N.dot((toL + toO).norm())
@@ -190,7 +190,7 @@ class Triangle:
         # Reflection
         if bounce < 2:
             rayD = (D - N * 2 * D.dot(N)).norm()
-            color += raytrace(nudged, rayD, scene, bounce + 1, FARAWAY) * self.mirror
+            color += raytrace(nudged, rayD, scene, bounce + 1) * self.mirror
 
         # Blinn-Phong shading (specular)
         phong = N.dot((toL + toO).norm())
@@ -199,8 +199,6 @@ class Triangle:
 
 
 class Plane:
-    # p = Punkt auf der Ebene
-    # n = Normalenvektor auf der Ebene
     def __init__(self, P, N, diffuse, mirror):
         self.P = P
         self.N = N.norm()
@@ -260,16 +258,15 @@ class RaytracerForPic:
         self.w = width
         self.h = height
         self.scene_objects = [
-            Sphere(vec3(.5, .5, 0), .25, vec3(0, 0, 1), vec3(1, 0, 0), self.w, self.h),  # Rechte Kugel
-            Sphere(vec3(0, 1, 0), .25, vec3(1, 0, 0), vec3(0, 1, 0), self.w, self.h),  # Obere Kugel
-            Sphere(vec3(-.5, .5, 0), .25, vec3(0, 1, 0), vec3(0, 0, 1), self.w, self.h),  # Linke Kugel
+            Sphere(vec3(.5, .5, 0), .25, vec3(0, 0, 1), self.w, self.h, 0.8),  # Rechte Kugel
+            Sphere(vec3(0, 1, 0), .25, vec3(1, 0, 0), self.w, self.h, 0.5),  # Obere Kugel
+            Sphere(vec3(-.5, .5, 0), .25, vec3(0, 1, 0), self.w, self.h, 0.2),  # Linke Kugel
             #CheckeredSphere(vec3(0, -99999.5, 0), 99999, rgb(.75, .75, .75), FARAWAY, self.w, self.h, L, E, 0),     # mirror = 0 dann gehts
-            Triangle(vec3(.5, .5, 0), vec3(0, 1, 0), vec3(-.5, .5, 0), vec3(1, 1, 0), 0.25),
+            Triangle(vec3(.5, .5, 0), vec3(0, 1, 0), vec3(-.5, .5, 0), rgb(1, 1, 0), 0.25),
             CheckeredPlane(vec3(0, 0, 0), vec3(0, 0.1, 0), vec3(1.5, 1.5, 1.5), 0.25)
-
         ]
 
-    def render(self):
+    def raytrace_image(self):
         r = float(self.w) / self.h
         # Screen coordinates: x0, y0, x1, y1.
         S = (-1, 1 / r + .25, 1, -1 / r + .25)
@@ -277,7 +274,7 @@ class RaytracerForPic:
         y = np.repeat(np.linspace(S[1], S[3], self.h), self.w)
 
         Q = vec3(x, y, 0)
-        color = raytrace(E, (Q - E).norm(), self.scene_objects, FARAWAY)
+        color = raytrace(E, (Q - E).norm(), self.scene_objects)
 
         rgb_channels = [Image.fromarray((255 * np.clip(c, 0, 1).reshape((self.h, self.w))).astype(np.uint8), "L") for c
                         in color.components()]
@@ -287,5 +284,5 @@ class RaytracerForPic:
 
 
 if __name__ == '__main__':
-    rt = RaytracerForPic(400, 300, vec3(5, 5, -10), vec3(0, 0.35, -1), 1.0e39)
-    rt.render()
+    rt = RaytracerForPic(400, 300)
+    rt.raytrace_image()

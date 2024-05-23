@@ -88,7 +88,7 @@ class RayTracer:
                 self.rt.scene_objects[i] = obj
 
         # rerender
-        self.rt.render()
+        self.rt.raytrace_image()
 
     def rotate_neg(self):
         # angle around which to rotate
@@ -136,16 +136,16 @@ class RayTracer:
                 self.rt.scene_objects[i] = obj
 
         # rerender
-        self.rt.render()
+        self.rt.raytrace_image()
 
     def render(self):
-        return self.rt.render()
+        return self.rt.raytrace_image()
 
 
 # main function
 if __name__ == '__main__':
     # set size of render viewport
-    width, height = 400, 300
+    width, height = 400, 600
 
     # instantiate a ray tracer
     ray_tracer = RayTracer(width, height)
