@@ -193,13 +193,10 @@ class Triangle:
         self.L = L
         self.FARAWAY = FARAWAY
 
-    # ermittelt von jedem Objekt in der Szene die Entfernung von der Kamera
     def intersect(self, O, D):
-        # Berechnung der Seitenlängen und des Vektors von O nach A
         u = self.B - self.A
         v = self.C - self.A
         w = O - self.A
-
         dXv = D.cross(v)
         wXu = w.cross(u)
 
