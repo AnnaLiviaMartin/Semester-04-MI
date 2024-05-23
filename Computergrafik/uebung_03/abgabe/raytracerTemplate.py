@@ -45,50 +45,17 @@ class RayTracer:
         self.rt = RaytracerForPic(self.widthPic, self.heightPic, vec3(5, 5, -10), vec3(0, 0.35, -1), 1.0e39)
 
     def rotate_pos(self):
-        # TODO: modify scene accordingly
-        # pass
-
-        # translate center to origin
-        # point around which we want to rotate
-        center_of_mass = self.rt.schwerpunkt()
-        xp = center_of_mass[0]
-        yp = center_of_mass[1]
-        zp = center_of_mass[2]
-        translation = np.array([
-            [1, 0, 0, -xp],
-            [0, 1, 0, -yp],
-            [0, 0, 1, -zp],
-            [0, 0, 0, 1]
-        ])
-
-        # rotate object
         # angle around which to rotate
         ang = np.pi / 8
         rotation = np.array([
-            [np.cos(ang), 0, np.sin(ang), 0],
+            [np.cos(ang), 0, -np.sin(ang), 0],
             [0, 1, 0, 0],
-            [-np.sin(ang), 0, np.cos(ang), 0],
-            [0, 0, 0, 1]
-        ])
-
-        # translate center back
-        translation_back = np.array([
-            [1, 0, 0, xp],
-            [0, 1, 0, yp],
-            [0, 0, 1, zp],
+            [np.sin(ang), 0, np.cos(ang), 0],
             [0, 0, 0, 1]
         ])
 
         # combined transformation
-        #M = translation_back @ rotation @ translation
         M = rotation
-
-        # debug logs
-        print(f"Center of mass: {center_of_mass}\n")
-        print(f"Translation matrix: {translation}\n")
-        print(f"Rotation matrix: {rotation}\n")
-        print(f"Translation back matrix: {translation_back}\n")
-        print(f"Combined transformation matrix: {M}\n")
 
         # application to the spheres
         for i in range(len(self.rt.scene_objects)):
@@ -109,8 +76,35 @@ class RayTracer:
         self.rt.raytracing_Scene()
 
     def rotate_neg(self):
-        # TODO: modify scene accordingly
-        pass
+        # angle around which to rotate
+        ang = np.pi / 8
+        rotation = np.array([
+            [np.cos(ang), 0, np.sin(ang), 0],
+            [0, 1, 0, 0],
+            [-np.sin(ang), 0, np.cos(ang), 0],
+            [0, 0, 0, 1]
+        ])
+
+        # combined transformation
+        M = rotation
+
+        # application to the spheres
+        for i in range(len(self.rt.scene_objects)):
+            obj = self.rt.scene_objects[i]
+            obj: Sphere
+            # homogeneous center of each object (sphere)
+            ch = np.array([obj.c.x, obj.c.y, obj.c.z, 1])
+            print(f"NEW SPHERE\n")
+            print(f"Original center (homogeneous): {ch}\n")
+            # calculate new center after rotation
+            ch_new = M @ ch
+            print(f"New center (homogeneous): {ch_new}\n")
+            # set new value
+            obj.c = vec3(ch_new[:3][0], ch_new[:3][1], ch_new[:3][2])
+            self.rt.scene_objects[i] = obj
+
+        # rerender
+        self.rt.raytracing_Scene()
 
     def render(self):
         return self.rt.raytracing_Scene()
