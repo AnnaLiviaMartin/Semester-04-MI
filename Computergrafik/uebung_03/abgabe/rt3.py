@@ -4,7 +4,6 @@ import numpy as np
 import time
 import numbers
 
-
 class RaytracerForPic:
     """this is the raytracer which generates one image"""
 
@@ -17,11 +16,11 @@ class RaytracerForPic:
         self.E = E  # Eye position
         self.FARAWAY = FARAWAY  # an implausibly huge distance
         self.scene_objects = [
-            Sphere(vec3(.5, 0, 0), .25, rgb(0, 0, 1), self.FARAWAY, self.w, self.h, vec3(5, 5, -10), vec3(0, 0.35, -1)),  # Rechte Kugel
-            Sphere(vec3(0, .5, 0), .25, rgb(.5, .223, .5), self.FARAWAY, self.w, self.h, vec3(5, 5, -10), vec3(0, 0.35, -1)),  # Obere Kugel
-            Sphere(vec3(-.5, 0, 0), .25, rgb(1, .572, .184), self.FARAWAY, self.w, self.h, vec3(5, 5, -10), vec3(0, 0.35, -1)),  # Linke Kugel
-            CheckeredSphere(vec3(0, -99999.5, 0), 99999, rgb(.75, .75, .75), self.FARAWAY, self.w, self.h,
-                            vec3(5, 5, -10), vec3(0, 0.35, -1), 0.25),
+            Sphere(vec3(.5, 0, 0), .25, rgb(0, 0, 1), self.FARAWAY, self.w, self.h, vec3(5, 5, -10), vec3(0, 0.35, -1)),    # Rechte Kugel
+            Sphere(vec3(0, .5, 0), .25, rgb(1, 0, 0), self.FARAWAY, self.w, self.h, vec3(5, 5, -10), vec3(0, 0.35, -1)),  # Obere Kugel
+            Sphere(vec3(-.5, 0, 0), .25, rgb(0, 1, 0), self.FARAWAY, self.w, self.h, vec3(5, 5, -10), vec3(0, 0.35, -1)),  # Linke Kugel
+            CheckeredSphere(vec3(0, -99999.5, 0), 99999, rgb(.75, .75, .75), self.FARAWAY, self.w, self.h, vec3(5, 5, -10), vec3(1.5, 1.5, 1.5), 0.25),
+            Triangle(vec3(.5, 0, 0), vec3(0, .5, 0), vec3(-.5, 0, 0), rgb(1, 1, 0), 0.5, self.L, self.E, self.FARAWAY)
         ]
 
     def raytracing_Scene(self):
@@ -31,25 +30,14 @@ class RaytracerForPic:
         x = np.tile(np.linspace(S[0], S[2], self.w), self.h)
         y = np.repeat(np.linspace(S[1], S[3], self.h), self.w)
 
-        t0 = time.time()
         Q = vec3(x, y, 0)
         color = raytrace(self.E, (Q - self.E).norm(), self.scene_objects, self.FARAWAY)
-        print("Took", time.time() - t0)
 
         rgb_channels = [Image.fromarray((255 * np.clip(c, 0, 1).reshape((self.h, self.w))).astype(np.uint8), "L") for c
                         in color.components()]
         im = Image.merge("RGB", rgb_channels)  # .save("./pictures/rt3.png")
         im = np.array(im)
         return im
-
-    def schwerpunkt(self):
-        points = [
-            np.array([self.scene_objects[0].c.x, self.scene_objects[0].c.y, self.scene_objects[0].c.z]),  # Obere Kugel
-            np.array([self.scene_objects[1].c.x, self.scene_objects[1].c.y, self.scene_objects[1].c.z]),  # Linke Kugel
-            np.array([self.scene_objects[2].c.x, self.scene_objects[2].c.y, self.scene_objects[2].c.z])  # Rechte Kugel
-        ]
-        length = len(points)
-        return np.array([(1 / length) + (points[0][0] + points[0][1] + points[0][2]), (1 / length) + (points[1][0] + points[1][1] + points[1][2]), (1 / length) + (points[2][0] + points[2][1] + points[2][2])])
 
 
 def extract(cond, x):
@@ -96,6 +84,12 @@ class vec3():
         np.place(r.y, cond, self.y)
         np.place(r.z, cond, self.z)
         return r
+
+    def cross(self, other):
+        return vec3(
+            self.y * other.z - self.z * other.y,
+            self.z * other.x - self.x * other.z,
+            self.x * other.y - self.y * other.x)
 
 
 rgb = vec3
@@ -181,6 +175,74 @@ class CheckeredSphere(Sphere):
     def diffusecolor(self, M):
         checker = ((M.x * 2).astype(int) % 2) == ((M.z * 2).astype(int) % 2)
         return self.diffuse * checker
+
+
+class Triangle:
+    def __init__(self, A, B, C, diffuse, mirror, L, E, FARAWAY):
+        self.A = A
+        self.B = B
+        self.C = C
+        self.diffuse = diffuse
+        self.mirror = mirror
+        self.E = E
+        self.L = L
+        self.FARAWAY = FARAWAY
+
+    # ermittelt von jedem Objekt in der Szene die Entfernung von der Kamera
+    def intersect(self, O, D):
+        # Berechnung der Seitenlängen und des Vektors von O nach A
+        u = self.B - self.A
+        v = self.C - self.A
+        w = O - self.A
+
+        dXv = D.cross(v)
+        wXu = w.cross(u)
+
+        t = 1 / dXv.dot(u) * wXu.dot(v)
+        r = 1 / dXv.dot(u) * dXv.dot(w)
+        s = 1 / dXv.dot(u) * wXu.dot(D)
+
+        # point e is in the triangle if r, s [0, 1] AND r + s <= 1
+        return np.where(((0 <= r) & (1 >= r) & (0 <= s) & (1 >= s) & (r + s <= 1) & (t > 0)), t, self.FARAWAY)
+
+    def diffusecolor(self, M):
+        return self.diffuse
+
+    def light(self, O, D, d, scene, bounce):
+        M = (O + D * d)                                     # intersection point
+        N = (self.B - self.A).cross(self.C - self.A).norm() # normal
+        toL = (self.L - M).norm()                                # direction to light
+        toO = (self.E - M).norm()                                # direction to ray origin
+        nudged = M + N * .0001                              # M nudged to avoid itself
+
+        # Shadow: find if the point is shadowed or not.
+        # This amounts to finding out if M can see the light
+        light_distances = [s.intersect(nudged, toL) for s in scene]
+        light_nearest = reduce(np.minimum, light_distances)
+        seelight = light_distances[scene.index(self)] == light_nearest
+
+        # Ambient
+        color = rgb(0.05, 0.05, 0.05)
+
+        # Lambert shading (diffuse)
+        lv = np.maximum(N.dot(toL), 0)
+        color += self.diffusecolor(M) * lv * seelight
+
+        # Reflection
+        if bounce < 2:
+            rayD = (D - N * 2 * D.dot(N)).norm()
+            color += raytrace(nudged, rayD, scene, bounce + 1) * self.mirror
+
+        # Blinn-Phong shading (specular)
+        phong = N.dot((toL + toO).norm())
+        color += rgb(1, 1, 1) * np.power(np.clip(phong, 0, 1), 50) * seelight
+        return color
+
+    def mittelpunkt(self):
+        x = (self.A.x + self.B.x + self.C.x) / 3
+        y = (self.A.y + self.B.y + self.C.y) / 3
+        z = (self.A.z + self.B.z + self.C.z) / 3
+        return vec3(x, y, z)
 
 
 if __name__ == '__main__':
