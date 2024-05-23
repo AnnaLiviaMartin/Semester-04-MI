@@ -50,9 +50,10 @@ class RayTracer:
 
         # translate center to origin
         # point around which we want to rotate
-        xp = 0
-        yp = 0
-        zp = 0
+        center_of_mass = self.rt.schwerpunkt()
+        xp = center_of_mass[0]
+        yp = center_of_mass[1]
+        zp = center_of_mass[2]
         translation = np.array([
             [1, 0, 0, -xp],
             [0, 1, 0, -yp],
