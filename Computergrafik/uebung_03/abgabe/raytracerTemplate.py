@@ -31,7 +31,6 @@ from typing import List, Tuple, Dict, Set, Optional, Union, Any, Callable, Itera
 
 class RayTracer:
 
-    # TODO change Materialeigenschaften of Kugeln
     def __init__(self, widthPic, heightPic):
         self.widthPic = widthPic
         self.heightPic = heightPic
@@ -72,9 +71,6 @@ class RayTracer:
                 self.rt.scene_objects[i] = obj
             elif isinstance(obj, Triangle):
                 obj: Triangle
-
-                # homogeneous center of each object (sphere)
-                ch = np.array([obj.A.x, obj.A.y, obj.A.z, 1])
 
                 # calculate new points after rotation
                 ch_A = M @ np.array([obj.A.x, obj.A.y, obj.A.z, 1])
@@ -120,9 +116,6 @@ class RayTracer:
                 self.rt.scene_objects[i] = obj
             elif isinstance(obj, Triangle):
                 obj: Triangle
-
-                # homogeneous center of each object (sphere)
-                ch = np.array([obj.A.x, obj.A.y, obj.A.z, 1])
 
                 # calculate new points after rotation
                 ch_A = M @ np.array([obj.A.x, obj.A.y, obj.A.z, 1])

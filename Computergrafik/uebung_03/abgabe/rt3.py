@@ -258,7 +258,7 @@ class RaytracerForPic:
         self.w = width
         self.h = height
         self.scene_objects = [
-            Sphere(vec3(.5, .5, 0), .25, vec3(0, 0, 1), self.w, self.h, 0.8),  # Rechte Kugel
+            Sphere(vec3(.5, .5, 0), .25, vec3(0, 0, 1), self.w, self.h, 0.8),  # Rechte Kugel with different materials/mirrors
             Sphere(vec3(0, 1, 0), .25, vec3(1, 0, 0), self.w, self.h, 0.5),  # Obere Kugel
             Sphere(vec3(-.5, .5, 0), .25, vec3(0, 1, 0), self.w, self.h, 0.2),  # Linke Kugel
             Triangle(vec3(.5, .5, 0), vec3(0, 1, 0), vec3(-.5, .5, 0), rgb(1, 1, 0), 0.25),
