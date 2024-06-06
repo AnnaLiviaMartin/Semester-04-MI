@@ -184,7 +184,7 @@ class Triangle:
         color = rgb(0.05, 0.05, 0.05)
 
         # Lambert shading (diffuse)
-        lv = np.maximum(N.dot(toL), 0)
+        lv = abs(N.dot(toL))
         color += self.diffusecolor() * lv * seelight
 
         # Reflection
