@@ -1,0 +1,6 @@
+[submodule "Webbasierte-Anwendungen/Webbasierte-Anwendungen/Beispielcode-Vorlesung/vue-beispiel-2024"]
+	path = Webbasierte-Anwendungen/Webbasierte-Anwendungen/Beispielcode-Vorlesung/vue-beispiel-2024
+	url = https://amart001@scm.mi.hs-rm.de/rhodecode/2024web/2024web00/vue3-spielwiese-2024
+[submodule "Webbasierte-Anwendungen/Webbasierte-Anwendungen/Beispielcode-Vorlesung/spring-htmx-spielwiesen"]
+	path = Webbasierte-Anwendungen/Webbasierte-Anwendungen/Beispielcode-Vorlesung/spring-htmx-spielwiesen
+	url = https://amart001@scm.mi.hs-rm.de/rhodecode/2024web/2024web00/spring-htmx-spielwiese
