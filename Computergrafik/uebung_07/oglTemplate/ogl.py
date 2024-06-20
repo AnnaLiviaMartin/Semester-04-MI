@@ -17,7 +17,7 @@
  *             @version:   0.91
  *                @date:   07.06.2022
  ******************************************************************************/
-/**         oglTemplate.py
+/**         ogl.py
  *
  *          Simple Python OpenGL program that uses PyOpenGL + GLFW to get an
  *          OpenGL 3.2 core profile context and animate a colored triangle.
@@ -30,8 +30,13 @@ from OpenGL.GL import *
 from OpenGL.arrays.vbo import VBO
 from OpenGL.GL.shaders import *
 from mat4 import *
+from readOutFile import load_from_file, compute_normals
 
 EXIT_FAILURE = -1
+
+
+def convert_into_array(vertices):
+    pass
 
 
 class Scene:
@@ -66,7 +71,11 @@ class Scene:
         # TODO: 
         # 1. Load geometry from file and calc normals if not available
         # 2. Load geometry and normals in buffer objects
+        input_file = "./models/cow.obj"
+        vertices, faces = load_from_file(input_file)
+        normals = compute_normals(vertices, faces)
 
+        # Original Code
         # generate vertex array object
         self.vertex_array = glGenVertexArrays(1)
         glBindVertexArray(self.vertex_array)
