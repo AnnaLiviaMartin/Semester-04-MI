@@ -5,6 +5,8 @@ import numpy as np
 def load_from_file(filename):
     vertices = []
     faces = []
+    normals = []
+    has_normals = False
 
     with open(filename, 'r') as file:
         for line in file:
@@ -12,8 +14,11 @@ def load_from_file(filename):
                 vertices.append(np.array(list(map(float, line.strip().split()[1:]))))
             elif line.startswith('f '):     # faces (Polygon)
                 faces.append(np.array(list(map(int, line.strip().split()[1:]))))
+            elif line.startswith('vn '):
+                normals.append(np.array(list(map(int, line.strip().split()[1:]))))
+                has_normals = True
 
-    return vertices, faces
+    return vertices, faces, normals, has_normals
 
 
 def calc_normal(P1, P2, P3):

@@ -72,8 +72,9 @@ class Scene:
         # 1. Load geometry from file and calc normals if not available
         # 2. Load geometry and normals in buffer objects
         input_file = "./models/cow.obj"
-        vertices, faces = load_from_file(input_file)
-        normals = compute_normals(vertices, faces)
+        vertices, faces, normals, has_normals = load_from_file(input_file)
+        if not has_normals:
+            normals = compute_normals(vertices, faces)
 
         # Original Code
         # generate vertex array object
