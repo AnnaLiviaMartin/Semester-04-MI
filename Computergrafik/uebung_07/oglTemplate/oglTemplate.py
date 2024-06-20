@@ -23,14 +23,12 @@
  *          OpenGL 3.2 core profile context and animate a colored triangle.
  ****
 """
-
+import sys
 import glfw
 import numpy as np
-
 from OpenGL.GL import *
 from OpenGL.arrays.vbo import VBO
 from OpenGL.GL.shaders import *
-
 from mat4 import *
 
 EXIT_FAILURE = -1
@@ -42,13 +40,12 @@ class Scene:
     """
 
     def __init__(self, width, height, scenetitle="Hello Triangle"):
-        self.scenetitle         = scenetitle
-        self.width              = width
-        self.height             = height
-        self.angle              = 0
-        self.angle_increment    = 1
-        self.animate            = False
-
+        self.scenetitle = scenetitle
+        self.width = width
+        self.height = height
+        self.angle = 0
+        self.angle_increment = 1
+        self.animate = False
 
     def init_GL(self):
         # setup buffer (vertices, colors, normals, ...)
@@ -56,16 +53,15 @@ class Scene:
 
         # setup shader
         glBindVertexArray(self.vertex_array)
-        vertex_shader       = open("shader.vert","r").read()
-        fragment_shader     = open("shader.frag","r").read()
-        vertex_prog         = compileShader(vertex_shader, GL_VERTEX_SHADER)
-        frag_prog           = compileShader(fragment_shader, GL_FRAGMENT_SHADER)
+        vertex_shader = open("shader.vert", "r").read()
+        fragment_shader = open("shader.frag", "r").read()
+        vertex_prog = compileShader(vertex_shader, GL_VERTEX_SHADER)
+        frag_prog = compileShader(fragment_shader, GL_FRAGMENT_SHADER)
         self.shader_program = compileProgram(vertex_prog, frag_prog)
 
         # unbind vertex array to bind it again in method draw
         glBindVertexArray(0)
 
- 
     def gen_buffers(self):
         # TODO: 
         # 1. Load geometry from file and calc normals if not available
@@ -76,23 +72,23 @@ class Scene:
         glBindVertexArray(self.vertex_array)
 
         # generate and fill buffer with vertex positions (attribute 0)
-        positions = np.array([  0.0,  0.58,  0.0, # 0. vertex
-                               -0.5, -0.29,  0.0, # 1. vertex
-                                0.5, -0.29,  0.0, # 2. vertex
-                                0.0,  0.00, -0.58 # 3. vertex
-                                ], dtype=np.float32)
+        positions = np.array([0.0, 0.58, 0.0,  # 0. vertex
+                              -0.5, -0.29, 0.0,  # 1. vertex
+                              0.5, -0.29, 0.0,  # 2. vertex
+                              0.0, 0.00, -0.58  # 3. vertex
+                              ], dtype=np.float32)
         pos_buffer = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, pos_buffer)
         glBufferData(GL_ARRAY_BUFFER, positions.nbytes, positions, GL_STATIC_DRAW)
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, None)
         glEnableVertexAttribArray(0)
- 
+
         # generate and fill buffer with vertex colors (attribute 1)
-        colors = np.array([ 1.0, 0.0, 0.0, # 0. color
-                            0.0, 1.0, 0.0, # 1. color
-                            0.0, 0.0, 1.0, # 2. color
-                            1.0, 1.0, 1.0  # 3. color
-                            ], dtype=np.float32)
+        colors = np.array([1.0, 0.0, 0.0,  # 0. color
+                           0.0, 1.0, 0.0,  # 1. color
+                           0.0, 0.0, 1.0,  # 2. color
+                           1.0, 1.0, 1.0  # 3. color
+                           ], dtype=np.float32)
         col_buffer = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, col_buffer)
         glBufferData(GL_ARRAY_BUFFER, colors.nbytes, colors, GL_STATIC_DRAW)
@@ -100,21 +96,18 @@ class Scene:
         glEnableVertexAttribArray(1)
 
         # generate index buffer (for triangle strip)
-        self.indices = np.array([0, 1, 2, 3, 0, 1], dtype=np.int32)        
+        self.indices = np.array([0, 1, 2, 3, 0, 1], dtype=np.int32)
         ind_buffer_object = glGenBuffers(1)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ind_buffer_object)
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.indices.nbytes, self.indices, GL_STATIC_DRAW)
-        
+
         # unbind buffers to bind again in draw()
         glBindBuffer(GL_ARRAY_BUFFER, 0)
         glBindVertexArray(0)
 
-
-
     def set_size(self, width, height):
         self.width = width
         self.height = height
-
 
     def draw(self):
         # TODO:
@@ -133,16 +126,16 @@ class Scene:
         if self.animate:
             # increment rotation angle in each frame
             self.angle += self.angle_increment
-    
+
         # setup matrices
-        projection = perspective(45.0, self.width/self.height, 1.0, 5.0)
-        view       = look_at(0,0,2, 0,0,0, 0,1,0)
-        model      = rotate_y(self.angle)
+        projection = perspective(45.0, self.width / self.height, 1.0, 5.0)
+        view = look_at(0, 0, 2, 0, 0, 0, 0, 1, 0)
+        model = rotate_y(self.angle)
         mvp_matrix = projection @ view @ model
 
         # enable shader & set uniforms
         glUseProgram(self.shader_program)
-        
+
         # determine location of uniform variable varName
         varLocation = glGetUniformLocation(self.shader_program, 'modelview_projection_matrix')
         # pass value to shader
@@ -150,12 +143,11 @@ class Scene:
 
         # enable vertex array & draw triangle(s)
         glBindVertexArray(self.vertex_array)
-        glDrawElements(GL_TRIANGLE_STRIP, self.indices.nbytes//4, GL_UNSIGNED_INT, None)
+        glDrawElements(GL_TRIANGLE_STRIP, self.indices.nbytes // 4, GL_UNSIGNED_INT, None)
 
         # unbind the shader and vertex array state
         glUseProgram(0)
         glBindVertexArray(0)
-        
 
 
 class RenderWindow:
@@ -194,7 +186,7 @@ class RenderWindow:
         glfw.set_window_size_callback(self.window, self.on_size)
 
         # create scene
-        self.scene = scene  
+        self.scene = scene
         if not self.scene:
             glfw.terminate()
             sys.exit(EXIT_FAILURE)
@@ -204,7 +196,6 @@ class RenderWindow:
         # exit flag
         self.exitNow = False
 
-
     def init_GL(self):
         # debug: print GL and GLS version
         # print('Vendor       : %s' % glGetString(GL_VENDOR))
@@ -213,11 +204,10 @@ class RenderWindow:
         # print('Renderer     : %s' % glGetString(GL_RENDERER))
 
         # set background color to black
-        glClearColor(0, 0, 0, 0)     
+        glClearColor(0, 0, 0, 0)
 
         # Enable depthtest
         glEnable(GL_DEPTH_TEST)
-
 
     def on_mouse_button(self, win, button, action, mods):
         print("mouse button: ", win, button, action, mods)
@@ -249,10 +239,8 @@ class RenderWindow:
                 # TODO:
                 print("rotate: around z-axis")
 
-
     def on_size(self, win, width, height):
         self.scene.set_size(width, height)
-
 
     def run(self):
         while not glfw.window_should_close(self.window) and not self.exitNow:
@@ -265,7 +253,7 @@ class RenderWindow:
 
             # call the rendering function
             self.scene.draw()
-            
+
             # swap front and back buffer
             glfw.swap_buffers(self.window)
 
@@ -273,10 +261,8 @@ class RenderWindow:
         glfw.terminate()
 
 
-
 # main function
 if __name__ == '__main__':
-
     print("presse 'a' to toggle animation...")
 
     # set size of render viewport
