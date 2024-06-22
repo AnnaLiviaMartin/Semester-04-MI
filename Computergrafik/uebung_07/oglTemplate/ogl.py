@@ -73,7 +73,7 @@ class Scene:
         # 2. Load geometry and normals in buffer objects
         input_file = "./models/cow.obj"
         vertices, faces, normals, has_normals = load_from_file(input_file)
-        if not has_normals:
+        if not has_normals == None:
             normals = compute_normals(vertices, faces)
 
         # Original Code

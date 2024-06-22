@@ -38,11 +38,9 @@ def compute_normals(vertices, faces):
         P2 = vertices[P2_index - 1]
         P3 = vertices[P3_index - 1]
 
-        P1_normal = calc_normal(P1, P2, P3)     # Normale für P1
-        P2_normal = calc_normal(P2, P1, P3)     # Normale für P2
-        P3_normal = calc_normal(P3, P2, P1)     # Normale für P3
+        P1_normal = calc_normal(P1, P2, P3)     # Normale
 
-        normals_for_faces.append([P1_normal, P2_normal, P3_normal])
+        normals_for_faces.append([P1_normal])
 
     return normals_for_faces
 
