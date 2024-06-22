@@ -73,20 +73,16 @@ class Scene:
         # 2. Load geometry and normals in buffer objects
         input_file = "./models/cow.obj"
         vertices, faces, normals, has_normals = load_from_file(input_file)
-        if not has_normals == None:
-            normals = compute_normals(vertices, faces)
+        #if not has_normals:
+        #    normals = compute_normals(vertices, faces)
 
         # Original Code
         # generate vertex array object
         self.vertex_array = glGenVertexArrays(1)
         glBindVertexArray(self.vertex_array)
 
-        # generate and fill buffer with vertex positions (attribute 0)
-        positions = np.array([0.0, 0.58, 0.0,  # 0. vertex
-                              -0.5, -0.29, 0.0,  # 1. vertex
-                              0.5, -0.29, 0.0,  # 2. vertex
-                              0.0, 0.00, -0.58  # 3. vertex
-                              ], dtype=np.float32)
+        # generate and fill buffer with vertex positions (attribute 0) -> vertices??
+        positions = np.array(vertices, dtype=np.float32)
         pos_buffer = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, pos_buffer)
         glBufferData(GL_ARRAY_BUFFER, positions.nbytes, positions, GL_STATIC_DRAW)
@@ -94,19 +90,15 @@ class Scene:
         glEnableVertexAttribArray(0)
 
         # generate and fill buffer with vertex colors (attribute 1)
-        colors = np.array([1.0, 0.0, 0.0,  # 0. color
-                           0.0, 1.0, 0.0,  # 1. color
-                           0.0, 0.0, 1.0,  # 2. color
-                           1.0, 1.0, 1.0  # 3. color
-                           ], dtype=np.float32)
+        colors = np.array([1.0, 0.0, 0.0], dtype=np.float32)
         col_buffer = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, col_buffer)
         glBufferData(GL_ARRAY_BUFFER, colors.nbytes, colors, GL_STATIC_DRAW)
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, None)
         glEnableVertexAttribArray(1)
 
-        # generate index buffer (for triangle strip)
-        self.indices = np.array([0, 1, 2, 3, 0, 1], dtype=np.int32)
+        # generate index buffer (for triangle strip)) -> faces??
+        self.indices = np.array(faces, dtype=np.int32)
         ind_buffer_object = glGenBuffers(1)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ind_buffer_object)
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.indices.nbytes, self.indices, GL_STATIC_DRAW)
@@ -154,6 +146,7 @@ class Scene:
         # enable vertex array & draw triangle(s)
         glBindVertexArray(self.vertex_array)
         glDrawElements(GL_TRIANGLE_STRIP, self.indices.nbytes // 4, GL_UNSIGNED_INT, None)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
         # unbind the shader and vertex array state
         glUseProgram(0)
