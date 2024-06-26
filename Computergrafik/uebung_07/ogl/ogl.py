@@ -31,12 +31,10 @@ from OpenGL.arrays.vbo import VBO
 from OpenGL.GL.shaders import *
 from mat4 import *
 from readOutFile import load_from_file, compute_normals
+from sys import argv
+from OpenGL.GLU import *
 
 EXIT_FAILURE = -1
-
-
-def convert_into_array(vertices):
-    pass
 
 
 class Scene:
@@ -44,13 +42,26 @@ class Scene:
         OpenGL scene class that render a RGB colored tetrahedron.
     """
 
-    def __init__(self, width, height, scenetitle="Hello Triangle"):
+    def __init__(self, width, height, scenetitle="Hello Object!"):
+        self.prev_mouse_pos = None
         self.scenetitle = scenetitle
         self.width = width
         self.height = height
+        self.angle_rotation_increment = 15
         self.angle = 0
+        self.angleX = 0
+        self.angleY = 0
+        self.angleZ = 0
         self.angle_increment = 1
         self.animate = False
+        self.fovy = 45.0
+        self.translation_x = 0
+        self.p1 = np.array([1, 1, 1])
+        self.p2 = np.array([1, 1, 1])
+        self.rotation_v = np.array([1, 1, 1])
+        self.rotation_alpha = 0.0
+        self.first_click_done = False
+        self.projection_type = 'perspective'
 
     def init_GL(self):
         # setup buffer (vertices, colors, normals, ...)
@@ -58,8 +69,8 @@ class Scene:
 
         # setup shader
         glBindVertexArray(self.vertex_array)
-        vertex_shader = open("shader.vert", "r").read()
-        fragment_shader = open("shader.frag", "r").read()
+        vertex_shader = open("shader_2.vert", "r").read()
+        fragment_shader = open("shader_2.frag", "r").read()
         vertex_prog = compileShader(vertex_shader, GL_VERTEX_SHADER)
         frag_prog = compileShader(fragment_shader, GL_FRAGMENT_SHADER)
         self.shader_program = compileProgram(vertex_prog, frag_prog)
@@ -68,15 +79,14 @@ class Scene:
         glBindVertexArray(0)
 
     def gen_buffers(self):
-        # TODO: 
-        # 1. Load geometry from file and calc normals if not available
-        # 2. Load geometry and normals in buffer objects
-        input_file = "./models/cow.obj"
+        if len(argv) > 1:
+            input_file = argv[1]
+        else:
+            input_file = "./models/elephant.obj"       
         vertices, faces, normals, has_normals, colors = load_from_file(input_file)
-        #if not has_normals:
-        #    normals = compute_normals(vertices, faces)
+        if not has_normals:
+            normals = compute_normals(vertices, faces)
 
-        # Original Code
         # generate vertex array object
         self.vertex_array = glGenVertexArrays(1)
         glBindVertexArray(self.vertex_array)
@@ -111,8 +121,60 @@ class Scene:
         self.width = width
         self.height = height
 
+    def switch_projection(self):
+        if self.projection_type == 'perspective':
+            self.projection_type = 'orthographic'
+        else:
+            self.projection_type = 'perspective'
+
+    def projectOnSphere(self, x, y, r):
+        x, y = x - width / 2.0, height / 2.0 - y
+
+        a = min(r * r, x ** 2 + y ** 2)
+        z = np.sqrt(r * r - a)
+        l = np.sqrt(x ** 2 + y ** 2 + z ** 2)
+        if l == 0:
+            return x, y, z
+        else:
+            return x / l, y / l, z / l
+
+    def update_scene(self, win):
+        x, y = glfw.get_cursor_pos(win)
+        if glfw.get_mouse_button(win, glfw.MOUSE_BUTTON_RIGHT) == glfw.PRESS:
+            dx = x - self.prev_mouse_pos
+            self.translation_x += dx * 0.002
+            self.prev_mouse_pos = x
+            self.draw()
+
+        if glfw.get_mouse_button(win, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
+            px, py, pz = self.projectOnSphere(x, y, 500)
+            if not self.first_click_done:  # Erster Klick festlegen
+                self.p1 = np.array([px, py, pz])
+                self.p1 /= np.linalg.norm(self.p1)
+                self.first_click_done = True
+
+            else:  # Weitere Bewegungen nach dem ersten Klick
+                self.p2 = np.array([px, py, pz])
+                self.p2 /= np.linalg.norm(self.p2)
+                cross_p1_p2 = np.cross(self.p1, self.p2)
+                if not np.allclose(cross_p1_p2, [0, 0, 0]):
+                    self.rotation_v = cross_p1_p2
+
+
+                dot_product = np.dot(self.p1, self.p2)
+                if dot_product > -1 and dot_product < 1:
+                    alpha = np.arccos(dot_product)
+                    if not np.isnan(alpha):
+                        self.rotation_alpha = alpha * 100
+                self.p2 = np.array([px, py, pz])
+
+        if glfw.get_mouse_button(win, glfw.MOUSE_BUTTON_LEFT) == glfw.RELEASE:
+            px, py, pz = self.projectOnSphere(x, y, 1.0)
+            self.p1 = np.array([px, py, pz])
+            self.p1 /= np.linalg.norm(self.p1)
+            self.first_click_done = False
+
     def draw(self):
-        # TODO:
         # 1. Render geometry 
         #    (a) just as a wireframe model and 
         #    with 
@@ -127,12 +189,20 @@ class Scene:
 
         if self.animate:
             # increment rotation angle in each frame
-            self.angle += self.angle_increment
+            self.angleX += self.angle_increment
+
+        if self.projection_type == 'perspective':
+            projection = perspective(self.fovy, self.width / self.height, 1.0, 5.0)
+        else:
+            projection = ortho(-1.0, 1.0, -1.0, 1.0, -1.0, 5.0)
 
         # setup matrices
-        projection = perspective(45.0, self.width / self.height, 1.0, 5.0)
         view = look_at(0, 0, 2, 0, 0, 0, 0, 1, 0)
-        model = rotate_y(self.angle)
+
+        model_rotation_x_y_z = rotate_x(self.angleX) @ rotate_y(self.angleY) @ rotate_z(self.angleZ)
+
+        model = translate(self.translation_x, 0, 0) @ rotate(self.rotation_alpha, self.rotation_v) @ model_rotation_x_y_z #matrixmultiplikation zur rotation
+        #print(self.rotation_alpha)
         mvp_matrix = projection @ view @ model
 
         # enable shader & set uniforms
@@ -145,8 +215,11 @@ class Scene:
 
         # enable vertex array & draw triangle(s)
         glBindVertexArray(self.vertex_array)
+
+        #Possibilities to change: GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_LINE_LOOP
+        #GL_TRIANGLES, GL_LINE_STRIP, GL_TRIANGLE_STRIP
         glDrawElements(GL_TRIANGLES, self.indices.nbytes // 4, GL_UNSIGNED_INT, None)
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)  #Adjust here for Fill-Mode like GL_FILL or GL_LINE
 
         # unbind the shader and vertex array state
         glUseProgram(0)
@@ -187,6 +260,7 @@ class RenderWindow:
         glfw.set_mouse_button_callback(self.window, self.on_mouse_button)
         glfw.set_key_callback(self.window, self.on_keyboard)
         glfw.set_window_size_callback(self.window, self.on_size)
+        glfw.set_scroll_callback(self.window, self.on_mouse_scroll)
 
         # create scene
         self.scene = scene
@@ -212,9 +286,36 @@ class RenderWindow:
         # Enable depthtest
         glEnable(GL_DEPTH_TEST)
 
+    def zoom_in(self, zoomFactor):
+        if (self.scene.fovy - zoomFactor > 0):
+            self.scene.fovy -= zoomFactor
+        self.scene.draw()
+
+    def zoom_out(self, zoomFactor):
+        self.scene.fovy += zoomFactor
+        self.scene.draw()
+
+    def on_mouse_scroll(self, win, xOffset, yOffset):
+        if (yOffset == -1):
+            self.zoom_out(1)
+        else:
+            self.zoom_in(1)
+
+    def switch_projection(self):
+        if scene.projection_type == 'perspective':
+            scene.projection_type = 'orthographic'
+        else:
+            scene.projection_type = 'perspective'
+
     def on_mouse_button(self, win, button, action, mods):
         print("mouse button: ", win, button, action, mods)
-        # TODO: realize arcball metaphor for rotations as well as
+
+        if button == glfw.MOUSE_BUTTON_RIGHT:
+            x, _ = glfw.get_cursor_pos(win)
+            if action == glfw.PRESS:
+                self.scene.prev_mouse_pos = x  # Setzen der x-maus koordinate
+
+        # realize arcball metaphor for rotations as well as
         #       scaling and translation paralell to the image plane,
         #       with the mouse. 
 
@@ -227,20 +328,29 @@ class RenderWindow:
             if key == glfw.KEY_A:
                 self.scene.animate = not self.scene.animate
             if key == glfw.KEY_P:
+                self.switch_projection()
                 # TODO:
                 print("toggle projection: orthographic / perspective ")
             if key == glfw.KEY_S:
                 # TODO:
                 print("toggle shading: wireframe, grouraud, phong")
             if key == glfw.KEY_X:
-                # TODO:
+                self.scene.angleX += self.scene.angle_rotation_increment
+                self.scene.draw()
                 print("rotate: around x-axis")
             if key == glfw.KEY_Y:
-                # TODO:
+                self.scene.angleY += self.scene.angle_rotation_increment
+                self.scene.draw()
                 print("rotate: around y-axis")
             if key == glfw.KEY_Z:
-                # TODO:
+                self.scene.angleZ += self.scene.angle_rotation_increment
+                self.scene.draw()
                 print("rotate: around z-axis")
+            #zoom mit 1 und 2
+            if key == glfw.KEY_1:
+                self.zoom_in(5)
+            if key == glfw.KEY_2:
+                self.zoom_out(5)
 
     def on_size(self, win, width, height):
         self.scene.set_size(width, height)
@@ -253,6 +363,9 @@ class RenderWindow:
             # setup viewport
             width, height = glfw.get_framebuffer_size(self.window)
             glViewport(0, 0, width, height);
+
+            # Update the scene based on mouse movement
+            self.scene.update_scene(self.window)
 
             # call the rendering function
             self.scene.draw()
@@ -274,7 +387,7 @@ if __name__ == '__main__':
     # instantiate a scene
     scene = Scene(width, height)
 
-    # pass the scene to a render window ... 
+    # pass the scene to a render window ...
     rw = RenderWindow(scene)
 
     # ... and start main loop
