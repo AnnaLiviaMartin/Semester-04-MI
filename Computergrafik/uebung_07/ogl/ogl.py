@@ -56,12 +56,12 @@ class Scene:
         self.animate = False
         self.fovy = 45.0
         self.translation_x = 0
-        self.p1 = np.array([1, 1, 1])
-        self.p2 = np.array([1, 1, 1])
-        self.rotation_v = np.array([1, 1, 1])
-        self.rotation_alpha = 0.0
+        self.p1_arcball = np.array([1, 1, 1])   # Punkt P1 für archball
+        self.p2_arcball = np.array([1, 1, 1])   # Punkt P2 für archball
+        self.rotation_direction_vector = np.array([1, 1, 1])   # Richtungsvektor
+        self.rotation_angle = 0.0               # Winkel um den man dreht
         self.first_click_done = False
-        self.projection_type = 'perspective'
+        self.projection = True
 
     def init_GL(self):
         # setup buffer (vertices, colors, normals, ...)
@@ -69,8 +69,8 @@ class Scene:
 
         # setup shader
         glBindVertexArray(self.vertex_array)
-        vertex_shader = open("shader_2.vert", "r").read()
-        fragment_shader = open("shader_2.frag", "r").read()
+        vertex_shader = open("shader.vert", "r").read()
+        fragment_shader = open("shader.frag", "r").read()
         vertex_prog = compileShader(vertex_shader, GL_VERTEX_SHADER)
         frag_prog = compileShader(fragment_shader, GL_FRAGMENT_SHADER)
         self.shader_program = compileProgram(vertex_prog, frag_prog)
@@ -122,10 +122,7 @@ class Scene:
         self.height = height
 
     def switch_projection(self):
-        if self.projection_type == 'perspective':
-            self.projection_type = 'orthographic'
-        else:
-            self.projection_type = 'perspective'
+        scene.projection = not scene.projection
 
     def projectOnSphere(self, x, y, r):
         x, y = x - width / 2.0, height / 2.0 - y
@@ -138,40 +135,34 @@ class Scene:
         else:
             return x / l, y / l, z / l
 
-    def update_scene(self, win):
-        x, y = glfw.get_cursor_pos(win)
-        if glfw.get_mouse_button(win, glfw.MOUSE_BUTTON_RIGHT) == glfw.PRESS:
+    def update_scene(self, window):
+        x, y = glfw.get_cursor_pos(window)
+        if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_RIGHT) == glfw.PRESS:        # Rechts Klick: parallel verschieben
             dx = x - self.prev_mouse_pos
             self.translation_x += dx * 0.002
             self.prev_mouse_pos = x
             self.draw()
 
-        if glfw.get_mouse_button(win, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
+        if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:         # Links Klick: Arcball-Metapher-Rotation
             px, py, pz = self.projectOnSphere(x, y, 500)
             if not self.first_click_done:  # Erster Klick festlegen
-                self.p1 = np.array([px, py, pz])
-                self.p1 /= np.linalg.norm(self.p1)
+                self.p1_arcball = np.array([px, py, pz]) / np.linalg.norm(self.p1_arcball)
                 self.first_click_done = True
-
             else:  # Weitere Bewegungen nach dem ersten Klick
-                self.p2 = np.array([px, py, pz])
-                self.p2 /= np.linalg.norm(self.p2)
-                cross_p1_p2 = np.cross(self.p1, self.p2)
+                self.p2_arcball = np.array([px, py, pz]) / np.linalg.norm(self.p2_arcball)
+                cross_p1_p2 = np.cross(self.p1_arcball, self.p2_arcball)
                 if not np.allclose(cross_p1_p2, [0, 0, 0]):
-                    self.rotation_v = cross_p1_p2
-
-
-                dot_product = np.dot(self.p1, self.p2)
+                    self.rotation_direction_vector = cross_p1_p2
+                dot_product = np.dot(self.p1_arcball, self.p2_arcball)
                 if dot_product > -1 and dot_product < 1:
                     alpha = np.arccos(dot_product)
                     if not np.isnan(alpha):
-                        self.rotation_alpha = alpha * 100
-                self.p2 = np.array([px, py, pz])
+                        self.rotation_angle = alpha * 100
+                self.p2_arcball = np.array([px, py, pz])
 
-        if glfw.get_mouse_button(win, glfw.MOUSE_BUTTON_LEFT) == glfw.RELEASE:
+        if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.RELEASE:
             px, py, pz = self.projectOnSphere(x, y, 1.0)
-            self.p1 = np.array([px, py, pz])
-            self.p1 /= np.linalg.norm(self.p1)
+            self.p1_arcball = np.array([px, py, pz]) / np.linalg.norm(self.p1_arcball)
             self.first_click_done = False
 
     def draw(self):
@@ -191,18 +182,15 @@ class Scene:
             # increment rotation angle in each frame
             self.angleX += self.angle_increment
 
-        if self.projection_type == 'perspective':
+        if self.projection:
             projection = perspective(self.fovy, self.width / self.height, 1.0, 5.0)
         else:
             projection = ortho(-1.0, 1.0, -1.0, 1.0, -1.0, 5.0)
 
         # setup matrices
         view = look_at(0, 0, 2, 0, 0, 0, 0, 1, 0)
-
         model_rotation_x_y_z = rotate_x(self.angleX) @ rotate_y(self.angleY) @ rotate_z(self.angleZ)
-
-        model = translate(self.translation_x, 0, 0) @ rotate(self.rotation_alpha, self.rotation_v) @ model_rotation_x_y_z #matrixmultiplikation zur rotation
-        #print(self.rotation_alpha)
+        model = translate(self.translation_x, 0, 0) @ rotate(self.rotation_angle, self.rotation_direction_vector) @ model_rotation_x_y_z
         mvp_matrix = projection @ view @ model
 
         # enable shader & set uniforms
@@ -216,10 +204,8 @@ class Scene:
         # enable vertex array & draw triangle(s)
         glBindVertexArray(self.vertex_array)
 
-        #Possibilities to change: GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_LINE_LOOP
-        #GL_TRIANGLES, GL_LINE_STRIP, GL_TRIANGLE_STRIP
         glDrawElements(GL_TRIANGLES, self.indices.nbytes // 4, GL_UNSIGNED_INT, None)
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)  #Adjust here for Fill-Mode like GL_FILL or GL_LINE
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)  # GL_FILL || GL_LINE
 
         # unbind the shader and vertex array state
         glUseProgram(0)
@@ -302,10 +288,7 @@ class RenderWindow:
             self.zoom_in(1)
 
     def switch_projection(self):
-        if scene.projection_type == 'perspective':
-            scene.projection_type = 'orthographic'
-        else:
-            scene.projection_type = 'perspective'
+        scene.projection = not scene.projection
 
     def on_mouse_button(self, win, button, action, mods):
         print("mouse button: ", win, button, action, mods)
@@ -362,7 +345,7 @@ class RenderWindow:
 
             # setup viewport
             width, height = glfw.get_framebuffer_size(self.window)
-            glViewport(0, 0, width, height);
+            glViewport(0, 0, width, height)
 
             # Update the scene based on mouse movement
             self.scene.update_scene(self.window)
