@@ -79,13 +79,14 @@ class Scene:
         glBindVertexArray(0)
 
     def gen_buffers(self):
+        """generiert die Punkte, Farben und Dreiecke je nach Kommandozeilenargument"""
         if len(argv) > 1:
             input_file = argv[1]
         else:
             input_file = "./models/elephant.obj"       
         vertices, faces, normals, has_normals, colors = load_from_file(input_file)
-        if not has_normals:
-            normals = compute_normals(vertices, faces)
+        #if not has_normals:
+        #    normals = compute_normals(vertices, faces)
 
         # generate vertex array object
         self.vertex_array = glGenVertexArrays(1)
@@ -121,9 +122,6 @@ class Scene:
         self.width = width
         self.height = height
 
-    def switch_projection(self):
-        scene.projection = not scene.projection
-
     def projectOnSphere(self, x, y, r):
         x, y = x - width / 2.0, height / 2.0 - y
 
@@ -135,7 +133,8 @@ class Scene:
         else:
             return x / l, y / l, z / l
 
-    def update_scene(self, window):
+    def draw_scene_when_mouse_used(self, window):
+        """Bei Mouseuse wird entweder die Arch-Ball berechnet oder horizontal verschoben"""
         x, y = glfw.get_cursor_pos(window)
         if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_RIGHT) == glfw.PRESS:        # Rechts Klick: parallel verschieben
             dx = x - self.prev_mouse_pos
@@ -165,23 +164,25 @@ class Scene:
             self.p1_arcball = np.array([px, py, pz]) / np.linalg.norm(self.p1_arcball)
             self.first_click_done = False
 
+
     def draw(self):
-        # 1. Render geometry 
-        #    (a) just as a wireframe model and 
-        #    with 
-        #    (b) a shader that realize Gouraud Shading
-        #    (c) a shader that realize Phong Shading
-        # 2. Rotate object around the x, y, z axis using the keys x, y, z
-        # 3. Rotate object with the mouse by realizing the arcball metaphor as 
-        #    well as scaling an translation
-        # 4. Realize Shadow Mapping
-        # 
+        """ 1. Render geometry 
+            (a) just as a wireframe model and 
+            with 
+            (b) a shader that realize Gouraud Shading
+            (c) a shader that realize Phong Shading
+         2. Rotate object around the x, y, z axis using the keys x, y, z
+         3. Rotate object with the mouse by realizing the arcball metaphor as 
+            well as scaling an translation
+         4. Realize Shadow Mapping"""
+        
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         if self.animate:
             # increment rotation angle in each frame
             self.angleX += self.angle_increment
 
+        # switching projections
         if self.projection:
             projection = perspective(self.fovy, self.width / self.height, 1.0, 5.0)
         else:
@@ -246,7 +247,7 @@ class RenderWindow:
         glfw.set_mouse_button_callback(self.window, self.on_mouse_button)
         glfw.set_key_callback(self.window, self.on_keyboard)
         glfw.set_window_size_callback(self.window, self.on_size)
-        glfw.set_scroll_callback(self.window, self.on_mouse_scroll)
+        glfw.set_scroll_callback(self.window, self.on_mouse_scroll_zoom)
 
         # create scene
         self.scene = scene
@@ -272,35 +273,28 @@ class RenderWindow:
         # Enable depthtest
         glEnable(GL_DEPTH_TEST)
 
-    def zoom_in(self, zoomFactor):
+    def zoom_in_object(self, zoomFactor):
+        """Reinzoomen um Faktor"""
         if (self.scene.fovy - zoomFactor > 0):
             self.scene.fovy -= zoomFactor
         self.scene.draw()
 
-    def zoom_out(self, zoomFactor):
+    def zoom_out_object(self, zoomFactor):
+        """Rauszoomen um Faktor"""
         self.scene.fovy += zoomFactor
         self.scene.draw()
 
-    def on_mouse_scroll(self, win, xOffset, yOffset):
+    def on_mouse_scroll_zoom(self, win, xOffset, yOffset):
         if (yOffset == -1):
-            self.zoom_out(1)
+            self.zoom_out_object(1)
         else:
-            self.zoom_in(1)
-
-    def switch_projection(self):
-        scene.projection = not scene.projection
+            self.zoom_in_object(1)
 
     def on_mouse_button(self, win, button, action, mods):
-        print("mouse button: ", win, button, action, mods)
-
         if button == glfw.MOUSE_BUTTON_RIGHT:
             x, _ = glfw.get_cursor_pos(win)
             if action == glfw.PRESS:
-                self.scene.prev_mouse_pos = x  # Setzen der x-maus koordinate
-
-        # realize arcball metaphor for rotations as well as
-        #       scaling and translation paralell to the image plane,
-        #       with the mouse. 
+                self.scene.prev_mouse_pos = x  # x koordinate der Maus
 
     def on_keyboard(self, win, key, scancode, action, mods):
         print("keyboard: ", win, key, scancode, action, mods)
@@ -311,8 +305,7 @@ class RenderWindow:
             if key == glfw.KEY_A:
                 self.scene.animate = not self.scene.animate
             if key == glfw.KEY_P:
-                self.switch_projection()
-                # TODO:
+                scene.projection = not scene.projection
                 print("toggle projection: orthographic / perspective ")
             if key == glfw.KEY_S:
                 # TODO:
@@ -329,11 +322,11 @@ class RenderWindow:
                 self.scene.angleZ += self.scene.angle_rotation_increment
                 self.scene.draw()
                 print("rotate: around z-axis")
-            #zoom mit 1 und 2
-            if key == glfw.KEY_1:
-                self.zoom_in(5)
-            if key == glfw.KEY_2:
-                self.zoom_out(5)
+            #zoom statt mit Maus auch mit N und M möglich
+            if key == glfw.KEY_N:
+                self.zoom_in_object(5)
+            if key == glfw.KEY_M:
+                self.zoom_out_object(5)
 
     def on_size(self, win, width, height):
         self.scene.set_size(width, height)
@@ -348,7 +341,7 @@ class RenderWindow:
             glViewport(0, 0, width, height)
 
             # Update the scene based on mouse movement
-            self.scene.update_scene(self.window)
+            self.scene.draw_scene_when_mouse_used(self.window)
 
             # call the rendering function
             self.scene.draw()
