@@ -340,7 +340,7 @@ class RenderWindow:
                 scene.rotation_model =  rotate(scene.rotation_angle, scene.rotation_direction_vector) @ scene.rotation_model
 
     def on_keyboard_pressed(self, win, key, scancode, action, mods):
-        print("keyboard: ", win, key, scancode, action, mods)
+        #print("keyboard: ", win, key, scancode, action, mods)
         if action == glfw.PRESS:
             # ESC to quit
             if key == glfw.KEY_ESCAPE:
@@ -349,22 +349,22 @@ class RenderWindow:
                 scene.animate = not scene.animate
             if key == glfw.KEY_P:
                 scene.projection = not scene.projection
-                print("toggle projection: orthographic / perspective ")
+                #print("toggle projection: orthographic / perspective ")
             if key == glfw.KEY_S:
                 # TODO:
                 print("toggle shading: wireframe, grouraud, phong")
             if key == glfw.KEY_X:
                 scene.angleX += scene.angle_rotation_increment
                 scene.draw()
-                print("rotate: around x-axis")
+                #print("rotate: around x-axis")
             if key == glfw.KEY_Y:
                 scene.angleY += scene.angle_rotation_increment
                 scene.draw()
-                print("rotate: around y-axis")
+                #print("rotate: around y-axis")
             if key == glfw.KEY_Z:
                 scene.angleZ += scene.angle_rotation_increment
                 scene.draw()
-                print("rotate: around z-axis")
+                #print("rotate: around z-axis")
             #zoom statt mit Maus auch mit N und M möglich
             if key == glfw.KEY_N:
                 self.zoom_in_object(5)
