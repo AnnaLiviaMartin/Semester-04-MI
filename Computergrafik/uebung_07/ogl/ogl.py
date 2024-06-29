@@ -61,7 +61,10 @@ class Scene:
         self.rotation_direction_vector = np.array([1, 1, 1])   # Richtungsvektor
         self.rotation_angle = 0.0               # Winkel um den man dreht
         self.first_click_done = False
-        self.projection = True
+        self.projection = True                  # Projektionsart die aktiviert ist
+        self.horizontal_shift_amount = 0.002    # Wie schnell das Objekt von links nach rechts gezogen wird
+        self.rotation_model = rotate(0, np.array([1,1,1]))
+
 
     def init_GL(self):
         # setup buffer (vertices, colors, normals, ...)
@@ -138,31 +141,31 @@ class Scene:
         x, y = glfw.get_cursor_pos(window)
         if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_RIGHT) == glfw.PRESS:        # Rechts Klick: parallel verschieben
             dx = x - self.prev_mouse_pos
-            self.translation_x += dx * 0.002
+            self.translation_x += dx * self.horizontal_shift_amount
             self.prev_mouse_pos = x
             self.draw()
 
-        if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:         # Links Klick: Arcball-Metapher-Rotation
-            px, py, pz = self.projectOnSphere(x, y, 500)
-            if not self.first_click_done:  # Erster Klick festlegen
-                self.p1_arcball = np.array([px, py, pz]) / np.linalg.norm(self.p1_arcball)
-                self.first_click_done = True
-            else:  # Weitere Bewegungen nach dem ersten Klick
-                self.p2_arcball = np.array([px, py, pz]) / np.linalg.norm(self.p2_arcball)
-                cross_p1_p2 = np.cross(self.p1_arcball, self.p2_arcball)
-                if not np.allclose(cross_p1_p2, [0, 0, 0]):
-                    self.rotation_direction_vector = cross_p1_p2
-                dot_product = np.dot(self.p1_arcball, self.p2_arcball)
-                if dot_product > -1 and dot_product < 1:
-                    alpha = np.arccos(dot_product)
-                    if not np.isnan(alpha):
-                        self.rotation_angle = alpha * 100
-                self.p2_arcball = np.array([px, py, pz])
+        # if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:         # Links Klick: Arcball-Metapher-Rotation
+        #     px, py, pz = self.projectOnSphere(x, y, 500)
+        #     if not self.first_click_done:  # Erster Klick festlegen
+        #         self.p1_arcball = np.array([px, py, pz]) / np.linalg.norm(self.p1_arcball)
+        #         self.first_click_done = True
+        #     else:  # Weitere Bewegungen nach dem ersten Klick
+        #         self.p2_arcball = np.array([px, py, pz]) / np.linalg.norm(self.p2_arcball)
+        #         cross_p1_p2 = np.cross(self.p1_arcball, self.p2_arcball)
+        #         if not np.allclose(cross_p1_p2, [0, 0, 0]):
+        #             self.rotation_direction_vector = cross_p1_p2
+        #         dot_product = np.dot(self.p1_arcball, self.p2_arcball)
+        #         if dot_product > -1 and dot_product < 1:
+        #             alpha = np.arccos(dot_product)
+        #             if not np.isnan(alpha):
+        #                 self.rotation_angle = alpha * 100
+        #         self.p2_arcball = np.array([px, py, pz])
 
-        if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.RELEASE:
-            px, py, pz = self.projectOnSphere(x, y, 1.0)
-            self.p1_arcball = np.array([px, py, pz]) / np.linalg.norm(self.p1_arcball)
-            self.first_click_done = False
+        # if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.RELEASE:
+        #     px, py, pz = self.projectOnSphere(x, y, 1.0)
+        #     self.p1_arcball = np.array([px, py, pz]) / np.linalg.norm(self.p1_arcball)
+        #     self.first_click_done = False
 
 
     def draw(self):
@@ -191,7 +194,7 @@ class Scene:
         # setup matrices
         view = look_at(0, 0, 2, 0, 0, 0, 0, 1, 0)
         model_rotation_x_y_z = rotate_x(self.angleX) @ rotate_y(self.angleY) @ rotate_z(self.angleZ)
-        model = translate(self.translation_x, 0, 0) @ rotate(self.rotation_angle, self.rotation_direction_vector) @ model_rotation_x_y_z
+        model = translate(self.translation_x, 0, 0) @ model_rotation_x_y_z @ self.rotation_model  #matrixmultiplikation 
         mvp_matrix = projection @ view @ model
 
         # enable shader & set uniforms
@@ -206,7 +209,7 @@ class Scene:
         glBindVertexArray(self.vertex_array)
 
         glDrawElements(GL_TRIANGLES, self.indices.nbytes // 4, GL_UNSIGNED_INT, None)
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)  # GL_FILL || GL_LINE
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)  # GL_FILL || GL_LINE -> je nachdem wie das Objekt aussehen soll
 
         # unbind the shader and vertex array state
         glUseProgram(0)
@@ -244,10 +247,11 @@ class RenderWindow:
         self.init_GL()
 
         # set window callbacks
-        glfw.set_mouse_button_callback(self.window, self.on_mouse_button)
-        glfw.set_key_callback(self.window, self.on_keyboard)
+        glfw.set_mouse_button_callback(self.window, self.on_mouse_pressed)
+        glfw.set_key_callback(self.window, self.on_keyboard_pressed)
         glfw.set_window_size_callback(self.window, self.on_size)
         glfw.set_scroll_callback(self.window, self.on_mouse_scroll_zoom)
+        glfw.set_cursor_pos_callback(self.window, self.on_mouse_move)
 
         # create scene
         self.scene = scene
@@ -268,7 +272,7 @@ class RenderWindow:
         # print('Renderer     : %s' % glGetString(GL_RENDERER))
 
         # set background color to black
-        glClearColor(0, 0, 0, 0)
+        glClearColor(0, 0, 0, 0)        # white: 1, 1, 1, 1
 
         # Enable depthtest
         glEnable(GL_DEPTH_TEST)
@@ -290,20 +294,59 @@ class RenderWindow:
         else:
             self.zoom_in_object(1)
 
-    def on_mouse_button(self, win, button, action, mods):
-        if button == glfw.MOUSE_BUTTON_RIGHT:
-            x, _ = glfw.get_cursor_pos(win)
-            if action == glfw.PRESS:
-                self.scene.prev_mouse_pos = x  # x koordinate der Maus
+    def calc_p1_archball(self, x, y):
+        px, py, pz = scene.projectOnSphere(x, y, 1000)
+        scene.p1_arcball = np.array([px, py, pz])
+        scene.p1_arcball /= np.linalg.norm(scene.p1_arcball)
+        return scene.p1_arcball
+    
+    def calc_p2_archball(self, x, y):
+        px, py, pz = scene.projectOnSphere(x, y, 1000)
+        scene.p2_arcball = np.array([px, py, pz])
+        scene.p2_arcball /= np.linalg.norm(scene.p2_arcball)
+        return scene.p2_arcball
 
-    def on_keyboard(self, win, key, scancode, action, mods):
+    def on_mouse_pressed(self, window, button, action, mods):
+        if button == glfw.MOUSE_BUTTON_RIGHT:  # horizontal verschieben
+            x, y = glfw.get_cursor_pos(window)
+            if action == glfw.PRESS:
+                scene.prev_mouse_pos = x
+
+        if button == glfw.MOUSE_BUTTON_LEFT:   # archball drehen
+            if action == glfw.PRESS:
+                x, y = glfw.get_cursor_pos(window)
+                scene.p1_arcball = self.calc_p1_archball(x, y)
+                scene.first_click_done = True   # 1. Klick sich merken
+            
+            if action == glfw.RELEASE:
+                scene.first_click_done = False  # Rotieren über Archball ist fertig
+
+    def on_mouse_move(self, window, x, y):
+        """Aufgerufen während sich die Mouse noch bewegt (davor: 1. Klick, danach: loslassen)"""
+        if scene.first_click_done:
+            # updaten der aktuellen Position beim Maus bewegen
+            px, py, pz = scene.projectOnSphere(x, y, 1000)
+            scene.p2_arcball = self.calc_p2_archball(x, y)
+            normal_p1_p2 = np.cross(scene.p1_arcball, scene.p2_arcball)
+
+            if not np.allclose(normal_p1_p2, [0, 0, 0]):       # zum rotieren 1x Rotationswinkel und 1x Rotationsmatrix berechnen (rotation_direction_vector, rotation_angle)
+                # Rotationsrichtung berechnen
+                scene.rotation_direction_vector = normal_p1_p2
+                dot_product = np.dot(scene.p1_arcball, scene.p2_arcball)
+                # Rotationswinkel berechnen
+                scene.rotation_angle = np.arccos(dot_product) * 10
+                scene.p2_arcball = np.array([px, py, pz])
+                # rotieren
+                scene.rotation_model =  rotate(scene.rotation_angle, scene.rotation_direction_vector) @ scene.rotation_model
+
+    def on_keyboard_pressed(self, win, key, scancode, action, mods):
         print("keyboard: ", win, key, scancode, action, mods)
         if action == glfw.PRESS:
             # ESC to quit
             if key == glfw.KEY_ESCAPE:
                 self.exitNow = True
             if key == glfw.KEY_A:
-                self.scene.animate = not self.scene.animate
+                scene.animate = not scene.animate
             if key == glfw.KEY_P:
                 scene.projection = not scene.projection
                 print("toggle projection: orthographic / perspective ")
@@ -311,16 +354,16 @@ class RenderWindow:
                 # TODO:
                 print("toggle shading: wireframe, grouraud, phong")
             if key == glfw.KEY_X:
-                self.scene.angleX += self.scene.angle_rotation_increment
-                self.scene.draw()
+                scene.angleX += scene.angle_rotation_increment
+                scene.draw()
                 print("rotate: around x-axis")
             if key == glfw.KEY_Y:
-                self.scene.angleY += self.scene.angle_rotation_increment
-                self.scene.draw()
+                scene.angleY += scene.angle_rotation_increment
+                scene.draw()
                 print("rotate: around y-axis")
             if key == glfw.KEY_Z:
-                self.scene.angleZ += self.scene.angle_rotation_increment
-                self.scene.draw()
+                scene.angleZ += scene.angle_rotation_increment
+                scene.draw()
                 print("rotate: around z-axis")
             #zoom statt mit Maus auch mit N und M möglich
             if key == glfw.KEY_N:
@@ -329,7 +372,7 @@ class RenderWindow:
                 self.zoom_out_object(5)
 
     def on_size(self, win, width, height):
-        self.scene.set_size(width, height)
+        scene.set_size(width, height)
 
     def run(self):
         while not glfw.window_should_close(self.window) and not self.exitNow:
@@ -341,10 +384,10 @@ class RenderWindow:
             glViewport(0, 0, width, height)
 
             # Update the scene based on mouse movement
-            self.scene.draw_scene_when_mouse_used(self.window)
+            scene.draw_scene_when_mouse_used(self.window)
 
             # call the rendering function
-            self.scene.draw()
+            scene.draw()
 
             # swap front and back buffer
             glfw.swap_buffers(self.window)
