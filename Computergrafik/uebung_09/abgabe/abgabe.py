@@ -31,7 +31,6 @@ import imgui
 import numpy as np
 import moderngl as mgl
 import os
-
 from imgui.integrations.glfw import GlfwRenderer
 
 
@@ -39,36 +38,36 @@ class Scene:
     """
         OpenGL 2D scene class
     """
+
     # initialization
     def __init__(self,
-                width,
-                height,
-                scene_title         = "2D Scene",
-                interpolation_fct   = None):
+                 width,
+                 height,
+                 scene_title="2D Scene",
+                 interpolation_fct=None):
 
-        self.width              = width
-        self.height             = height
-        self.scene_title        = scene_title
-        self.points             = []
+        self.width = width
+        self.height = height
+        self.scene_title = scene_title
+        self.points = []
         self.points_on_bezier_curve = []
-        self.curve_type         = 'orthographic'
-        self.show_spline        = True
+        self.curve_type = 'orthographic'
+        self.show_spline = True
 
         # Rendering
-        self.ctx                = None              # Assigned when calling init_gl()
-        self.bg_color           = (0.1, 0.1, 0.1)
-        self.point_size         = 7
-        self.point_color        = (1.0, 0.5, 0.5)
-        self.line_color         = (0.5, 0.5, 1.0)
-        self.curve_color        = (1.0, 0.0, 0.0)
-
+        self.ctx = None  # Assigned when calling init_gl()
+        self.bg_color = (0.1, 0.1, 0.1)
+        self.point_size = 7
+        self.point_color = (1.0, 0.5, 0.5)
+        self.line_color = (0.5, 0.5, 1.0)
+        self.curve_color = (1.0, 0.0, 0.0)
 
     def init_gl(self, ctx):
-        self.ctx        = ctx
+        self.ctx = ctx
 
         # Create Shaders
         self.shader = ctx.program(
-            vertex_shader = """
+            vertex_shader="""
                 #version 330
 
                 uniform mat4    m_proj;
@@ -85,7 +84,7 @@ class Scene:
                     f_col           = color;
                 }
             """,
-            fragment_shader = """
+            fragment_shader="""
                 #version 330
 
                 in vec3 f_col;
@@ -104,18 +103,17 @@ class Scene:
         b, t = self.height, 0
         n, f = -2, 2
         m_proj = np.array([
-            [2/(r-l),   0,          0,          -(l+r)/(r-l)],
-            [0,         2/(t-b),    0,          -(b+t)/(t-b)],
-            [0,         0,          -2/(f-n),    -(n+f)/(f-n)],
-            [0,         0,          0,          1]
+            [2 / (r - l), 0, 0, -(l + r) / (r - l)],
+            [0, 2 / (t - b), 0, -(b + t) / (t - b)],
+            [0, 0, -2 / (f - n), -(n + f) / (f - n)],
+            [0, 0, 0, 1]
         ], dtype=np.float32)
         m_proj = np.ascontiguousarray(m_proj.T)
         self.shader['m_proj'].write(m_proj)
         self.shader['color'] = self.point_color
 
-
     def resize(self, width, height):
-        self.width  = width
+        self.width = width
         self.height = height
 
         # Set projection matrix
@@ -123,25 +121,22 @@ class Scene:
         b, t = self.height, 0
         n, f = -2, 2
         m_proj = np.array([
-            [2/(r-l),   0,          0,          -(l+r)/(r-l)],
-            [0,         2/(t-b),    0,          -(b+t)/(t-b)],
-            [0,         0,          -2/(f-n),    -(n+f)/(f-n)],
-            [0,         0,          0,          1]
+            [2 / (r - l), 0, 0, -(l + r) / (r - l)],
+            [0, 2 / (t - b), 0, -(b + t) / (t - b)],
+            [0, 0, -2 / (f - n), -(n + f) / (f - n)],
+            [0, 0, 0, 1]
         ], dtype=np.float32)
         m_proj = np.ascontiguousarray(m_proj.T)
         self.shader['m_proj'].write(m_proj)
-
 
     # set polygon
     def add_point(self, point):
         self.points.append(point)
 
-
     # clear polygon
     def clear(self):
         self.points = []
         self.points_on_bezier_curve = []
-
 
     def render(self):
 
@@ -167,13 +162,12 @@ class Scene:
             vao_polygon.render(mgl.POINTS)
 
 
-
-
 class RenderWindow:
     """
         GLFW Rendering window class
         YOU SHOULD NOT EDIT THIS CLASS!
     """
+
     def __init__(self, scene):
 
         self.scene = scene
@@ -230,19 +224,17 @@ class RenderWindow:
         # exit flag
         self.exitNow = False
 
-
     def onMouseButton(self, win, button, action, mods):
         # Don't react to clicks on UI controllers
         if not imgui.get_io().want_capture_mouse:
-            #print("mouse button: ", win, button, action, mods)
+            # print("mouse button: ", win, button, action, mods)
             if action == glfw.PRESS:
                 x, y = glfw.get_cursor_pos(win)
                 p = [int(x), int(y)]
                 self.scene.add_point(p)
 
-
     def onKeyboard(self, win, key, scancode, action, mods):
-        #print("keyboard: ", win, key, scancode, action, mods)
+        # print("keyboard: ", win, key, scancode, action, mods)
 
         if action == glfw.PRESS:
             # ESC to quit
@@ -264,14 +256,12 @@ class RenderWindow:
                 # m (Anzahl zu berechnender Kurvenpunkte) niedriger
                 print("Anzahl zu berechnender Kurvenpunkte niedriger")
 
-
     def onSize(self, win, width, height):
-        #print("onsize: ", win, width, height)
-        self.width          = width
-        self.height         = height
-        self.ctx.viewport   = (0, 0, self.width, self.height)
+        # print("onsize: ", win, width, height)
+        self.width = width
+        self.height = height
+        self.ctx.viewport = (0, 0, self.width, self.height)
         self.scene.resize(width, height)
-
 
     def run(self):
         # initializer timer
@@ -285,10 +275,10 @@ class RenderWindow:
                 t = currT
 
                 # == Rendering GL ===
-                glfw.poll_events()                  # Poll for GLFW events
-                self.ctx.clear()                    # clear viewport
-                self.scene.render()                 # render scene
-                glfw.swap_buffers(self.window)      # swap front and back buffer
+                glfw.poll_events()  # Poll for GLFW events
+                self.ctx.clear()  # clear viewport
+                self.scene.render()  # render scene
+                glfw.swap_buffers(self.window)  # swap front and back buffer
 
         # end
         self.impl.shutdown()
@@ -296,14 +286,18 @@ class RenderWindow:
 
 
 if __name__ == '__main__':
-    print("bezierTemplate.py")
+    print("abgabe deBoor.py")
     print("pressing 'C' should clear the everything")
+    print("K: Ordnung erhöhen")
+    print("L: Ordnung erniedrigen")
+    print("M: Anzahl zu berechnender Kurvenpunkte erhöhen")
+    print("N: Anzahl zu berechnender Kurvenpunkte niedriger")
 
     # set size of render viewport
     width, height = 640, 480
 
     # instantiate a scene
-    scene = Scene(width, height, "Bezier Curve Template")
+    scene = Scene(width, height, "deBoor")
 
     rw = RenderWindow(scene)
     rw.run()
