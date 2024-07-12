@@ -7,14 +7,13 @@ from imgui.integrations.glfw import GlfwRenderer
 WIDTH = 400
 HEIGHT = 400
 
-HPSIZE = 2
 CCOLOR = (0.0, 0.0, 1.0)  # Blue
 BCOLOR = (0.0, 0.0, 0.0)  # Black
-BWIDTH = 2
 
-pointList = []
-order = 2
-numpoints = 100
+
+points = []      # control points
+order = 2       # order of the curve  
+numpoints = 100       # number of curve points to be calculated (for b spline curve)
 
 def calc_T(points):
     knotvector = []
@@ -56,7 +55,7 @@ def deboor(order, controlpoints, knotvector, t):
         result = reduce(order, point_span, knotvector, r, t)
         return result[0] if isinstance(result[0], np.ndarray) else result
     else:
-        return pointList[0]
+        return points[0]
 
 
 class Scene:
@@ -102,19 +101,19 @@ class Scene:
         self.prog['proj'].write(proj)
 
         # Draw control points and polygon
-        if len(pointList) > 0:
+        if len(points) > 0:
             self.prog['color'].write(np.array(CCOLOR, dtype='f4'))
-            self.vbo.write(np.array(pointList, dtype='f4'))
-            self.vao.render(mgl.POINTS, vertices=len(pointList))
-            if len(pointList) > 1:
-                self.vao.render(mgl.LINE_STRIP, vertices=len(pointList))
+            self.vbo.write(np.array(points, dtype='f4'))
+            self.vao.render(mgl.POINTS, vertices=len(points))
+            if len(points) > 1:
+                self.vao.render(mgl.LINE_STRIP, vertices=len(points))
 
         # Draw B-spline curve
-        if len(pointList) >= order:
+        if len(points) >= order:
             curve_points = []
-            knotvector = calc_T(pointList)
+            knotvector = calc_T(points)
             for i in np.linspace(knotvector[0], knotvector[-1], numpoints):
-                point = deboor(order - 1, np.array(pointList), knotvector, i)
+                point = deboor(order - 1, np.array(points), knotvector, i)
                 curve_points.append(point)
 
             self.prog['color'].write(np.array(BCOLOR, dtype='f4'))
@@ -145,7 +144,7 @@ def main():
     def mouse_button_callback(window, button, action, mods):
         if button == glfw.MOUSE_BUTTON_LEFT and action == glfw.PRESS:
             x, y = glfw.get_cursor_pos(window)
-            pointList.append([x, HEIGHT - y])
+            points.append([x, HEIGHT - y])
 
     glfw.set_mouse_button_callback(window, mouse_button_callback)
 
@@ -167,7 +166,7 @@ def main():
         changed, order = imgui.slider_int("Order", order, 2, 20)
         changed, numpoints = imgui.slider_int("Curve Points", numpoints, 1, 1000)
         if imgui.button("Clear"):
-            pointList.clear()
+            points.clear()
         imgui.end()
 
         scene.render()
