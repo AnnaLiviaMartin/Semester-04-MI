@@ -9,17 +9,15 @@ class Scene:
         self.height = height
         self.scene_title = scene_title
         self.points = []        # controlpoints
-        self.ctx = None
-        self.bg_color = (0.1, 0.1, 0.1)
-        self.point_size = 7
-        self.point_color = (1.0, 0.5, 0.5)
-        self.line_color = (0.5, 0.5, 1.0)
-
-        self.elementList = []
-        self.order_slider_scale = None
-        self.numpoints_slider_scale = None
-        self.order = 1
-        self.numpoints = 1
+        self.ctx = None         # OpenGL context which must exists
+        self.bg_color = (0.1, 0.1, 0.1)     # background color of window
+        self.point_size = 5         # determines size of a point in pixel
+        self.point_color = (1.0, 0.5, 0.5)      # color for points
+        self.line_color = (0.5, 0.5, 1.0)       # color for line between lines
+        self.b_spline_color = (0.5, 1.0, 0.5)       # b spline color
+        self.order = 2      # order of the curve  
+        self.numpoints = 10       # number of curve points to be calculated (for b spline curve)
+        self.b_spline_point_size = 3    # point size of b spline points
 
     def init_gl(self, ctx):
         self.ctx = ctx
@@ -75,15 +73,87 @@ class Scene:
         self.points = []
 
     def render(self):
-        """ draw (control-)polygon connecting (control-)points """
         self.ctx.clear(*self.bg_color)
+
+        # Draw control points and polygon
         if len(self.points) > 0:
             vbo = self.ctx.buffer(np.array(self.points, np.float32))
             vao = self.ctx.vertex_array(self.shader, [(vbo, '2f', 'v_pos')])
+            
             self.shader['color'] = self.line_color
             vao.render(mgl.LINE_STRIP)
+            
             self.shader['color'] = self.point_color
             vao.render(mgl.POINTS)
+
+        # Draw b spline curve
+        if len(self.points) >= self.order:
+            # calculate b spline points
+            curve_points = []
+            knotvector = self.calc_T(self.points)
+            for i in np.linspace(knotvector[0], knotvector[-1], self.numpoints):
+                point = self.deboor(self.order - 1, np.array(self.points), knotvector, i)
+                curve_points.append(point)
+
+            vbo2 = self.ctx.buffer(np.array(curve_points, np.float32))
+            vao2 = self.ctx.vertex_array(self.shader, [(vbo2, '2f', 'v_pos')])
+
+            self.shader['color'] = self.b_spline_color      # set color of b spline
+            #vao2.render(mgl.POINTS)        # show points of b spline
+            #vao2.render(mgl.LINE_STRIP)     # show curve of points of b spline
+            vao2.render(mgl.LINE_STRIP, vertices=len(curve_points) - 1)     # show curve of points of b spline without connection of first and last point
+
+
+    # de Boor calculation
+    def calc_T(self, points):
+        """Calculated knotvector for b spline curve"""
+        knotvector = []
+        knotvector.extend([0 for x in range(self.order)])
+        last_entry = len(points) - (self.order - 2)
+        knotvector.extend([x for x in range(1, last_entry)])
+        knotvector.extend([last_entry for x in range(self.order)])
+        return knotvector
+    
+    def find_index(self, knotvector, t):
+        """searches in a given node vector for the index of 
+        the first node that is greater than t"""
+        for i in range(len(knotvector)):
+            if knotvector[i] > t:
+                return i - 1
+        return len(knotvector) - 1
+    
+    def calc_dist_factor(self, min_val, max_val, t):
+        """describes the relative position of a point 
+        within a certain interval"""
+        return (t - min_val) / (max_val - min_val)
+
+    def reduce(self, order, controlpoints, knotvector, r, t):
+        """calculates a new point on the B-spline curve by 
+        gradually reducing the control points"""
+        if len(controlpoints) <= 1:
+            return controlpoints
+
+        interval = [knotvector[x] for x in range(r - order + 1, r + order + 1)]
+        new_points = []
+
+        for i in range(len(controlpoints) - 1):
+            small_interval = interval[i : i + order + 1]
+            dist = self.calc_dist_factor(small_interval[0], small_interval[-1], t)
+            p = controlpoints[i] * (1 - dist) + controlpoints[i + 1] * dist
+            new_points.append(p)
+
+        return self.reduce(order - 1, new_points, knotvector, r, t)
+
+    def deboor(self, order, controlpoints, knotvector, t):
+        """calculate de boor"""
+        r = self.find_index(knotvector, t)
+        point_span = controlpoints[r - order : r - order + 1 + order]
+
+        if len(point_span) > 0:
+            result = self.reduce(order, point_span, knotvector, r, t)
+            return result[0] if isinstance(result[0], np.ndarray) else result
+        else:
+            return self.points[0]
 
 class RenderWindow:
     def __init__(self, scene):
@@ -112,12 +182,26 @@ class RenderWindow:
                 self.scene.clear()
             elif key == glfw.KEY_K:
                 print("Ordnung erhöhen")
+                self.scene.order += 1
+                print("Ordnung: ", self.scene.order)
             elif key == glfw.KEY_L:
                 print("Ordnung erniedrigen")
+                if(self.scene.order < 2):
+                    self.scene.order = 1
+                else:
+                    self.scene.order -= 1
+                print("Ordnung: ", self.scene.order)
             elif key == glfw.KEY_M:
                 print("Anzahl zu berechnender Kurvenpunkte erhöhen")
+                self.scene.numpoints += 1
+                print("Anzahl Kurvenpunkte: ", self.scene.numpoints)
             elif key == glfw.KEY_N:
                 print("Anzahl zu berechnender Kurvenpunkte niedriger")
+                if(self.scene.numpoints < 2):
+                    self.scene.numpoints = 1
+                else:
+                    self.scene.numpoints -= 1
+                print("Anzahl Kurvenpunkte: ", self.scene.numpoints)
 
     def onSize(self, win, width, height):
         self.width = width
