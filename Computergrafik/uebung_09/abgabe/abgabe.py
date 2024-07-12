@@ -8,12 +8,18 @@ class Scene:
         self.width = width
         self.height = height
         self.scene_title = scene_title
-        self.points = []
+        self.points = []        # controlpoints
         self.ctx = None
         self.bg_color = (0.1, 0.1, 0.1)
         self.point_size = 7
         self.point_color = (1.0, 0.5, 0.5)
         self.line_color = (0.5, 0.5, 1.0)
+
+        self.elementList = []
+        self.order_slider_scale = None
+        self.numpoints_slider_scale = None
+        self.order = 1
+        self.numpoints = 1
 
     def init_gl(self, ctx):
         self.ctx = ctx
@@ -44,6 +50,7 @@ class Scene:
         self.update_projection()
 
     def update_projection(self):
+        """called when resizing window - calculating new projection"""
         m_proj = np.array([
             [2 / self.width, 0, 0, -1],
             [0, -2 / self.height, 0, 1],
@@ -54,17 +61,21 @@ class Scene:
         self.shader['m_proj'].write(m_proj)
 
     def resize(self, width, height):
+        """called when resizing window"""
         self.width = width
         self.height = height
         self.update_projection()
 
     def add_point(self, point):
+        """add point on click"""
         self.points.append(point)
 
     def clear(self):
+        """clear list of points"""
         self.points = []
 
     def render(self):
+        """ draw (control-)polygon connecting (control-)points """
         self.ctx.clear(*self.bg_color)
         if len(self.points) > 0:
             vbo = self.ctx.buffer(np.array(self.points, np.float32))
