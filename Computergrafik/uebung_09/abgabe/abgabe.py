@@ -226,6 +226,6 @@ if __name__ == '__main__':
     print("M: Anzahl zu berechnender Kurvenpunkte erhöhen")
     print("Shift + M: Anzahl zu berechnender Kurvenpunkte niedriger")
 
-    scene = Scene(640, 480, "deBoor")
+    scene = Scene(640, 480, "B-Spline-Kurve | de-Boor-Algorithmus")
     rw = RenderWindow(scene)
     rw.run()
