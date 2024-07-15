@@ -181,27 +181,29 @@ class RenderWindow:
             elif key == glfw.KEY_C:
                 self.scene.clear()
             elif key == glfw.KEY_K:
-                print("Ordnung erhöhen")
-                self.scene.order += 1
-                print("Ordnung: ", self.scene.order)
-            elif key == glfw.KEY_L:
-                print("Ordnung erniedrigen")
-                if(self.scene.order < 2):
-                    self.scene.order = 1
+                if mods & glfw.MOD_SHIFT:
+                    print("Shift + K: Ordnung erniedrigen")
+                    if(self.scene.order < 2):
+                        self.scene.order = 1
+                    else:
+                        self.scene.order -= 1
+                    print("Ordnung: ", self.scene.order)
                 else:
-                    self.scene.order -= 1
-                print("Ordnung: ", self.scene.order)
+                    print("K: Ordnung erhöhen")
+                    self.scene.order += 1
+                    print("Ordnung: ", self.scene.order)
             elif key == glfw.KEY_M:
-                print("Anzahl zu berechnender Kurvenpunkte erhöhen")
-                self.scene.numpoints += 1
-                print("Anzahl Kurvenpunkte: ", self.scene.numpoints)
-            elif key == glfw.KEY_N:
-                print("Anzahl zu berechnender Kurvenpunkte niedriger")
-                if(self.scene.numpoints < 2):
-                    self.scene.numpoints = 1
+                if mods & glfw.MOD_SHIFT:
+                    print("M: Anzahl zu berechnender Kurvenpunkte niedriger")
+                    if(self.scene.numpoints < 2):
+                        self.scene.numpoints = 1
+                    else:
+                        self.scene.numpoints -= 1
+                    print("Anzahl Kurvenpunkte: ", self.scene.numpoints)
                 else:
-                    self.scene.numpoints -= 1
-                print("Anzahl Kurvenpunkte: ", self.scene.numpoints)
+                    print("Shift + M: Anzahl zu berechnender Kurvenpunkte erhöhen")
+                    self.scene.numpoints += 1
+                    print("Anzahl Kurvenpunkte: ", self.scene.numpoints)
 
     def onSize(self, win, width, height):
         self.width = width
@@ -220,9 +222,9 @@ if __name__ == '__main__':
     print("abgabe deBoor.py")
     print("pressing 'C' should clear everything")
     print("K: Ordnung erhöhen")
-    print("L: Ordnung erniedrigen")
+    print("Shift + K: Ordnung erniedrigen")
     print("M: Anzahl zu berechnender Kurvenpunkte erhöhen")
-    print("N: Anzahl zu berechnender Kurvenpunkte niedriger")
+    print("Shift + M: Anzahl zu berechnender Kurvenpunkte niedriger")
 
     scene = Scene(640, 480, "deBoor")
     rw = RenderWindow(scene)
