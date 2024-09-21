@@ -1,0 +1,23 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+/.idea/.gitignore
+/out/production/chatbot/client_server/.idea/.gitignore
+/out/production/chatbot/client_server/.gitignore
+/out/production/chatbot/client_server/chatbot.iml
+/chatbot.iml
+/out/production/chatbot/client_server/Client.class
+/.idea/misc.xml
+/out/production/chatbot/client_server/.idea/misc.xml
+/.idea/modules.xml
+/out/production/chatbot/client_server/.idea/modules.xml
+/out/production/chatbot/client_server/ThreadedServer.class
+/.idea/vcs.xml
+/out/production/chatbot/client_server/.idea/vcs.xml
+/out/production/chatbot/client_server/Protokoll.class
+/out/production/chatbot/client_server/User.class
