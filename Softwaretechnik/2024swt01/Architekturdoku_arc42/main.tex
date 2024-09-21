@@ -1,0 +1,72 @@
+% main.tex
+%
+% Das ist das zentrale Dokument.
+
+%persönliche Infos
+\input{Berichtinfos}
+
+%allgemeine Einstellungen
+\documentclass[a4paper,ngerman,fontsize=12pt,bibliography=totoc,listof=totoc,numbers=noendperiod]{scrartcl}
+\usepackage{sectsty}
+\usepackage[ngerman]{babel}     % Paket für Deutsche Sprache (Übersetzungen von Chapter zu Kapitel, 
+\usepackage{titling}    %Hilft im Dokument auf den deklarierten Autor und Titel zuzugreifen
+\usepackage{csquotes}
+\usepackage[style=numeric-comp,backend=biber,doi=false,isbn=false,maxnames=3,sorting=none]{biblatex}
+\usepackage{graphicx}
+\usepackage{url}    %erzeugt schönere URLs (vorallem in den Quellen wichtig)
+\usepackage{float}  %Hilft beim Anordnen von Bildern, Grafiken und Tabellen
+\usepackage{booktabs}   %ermöglicht das erstellen von schöneren Tabellen 
+\usepackage{subfigure}  %lässt den Benutzer mehrere Grafiken/Bilder in einer Abbildung darstellen
+\usepackage[singlespacing]{setspace}   % Paket um den Zeilenabstand zu ändern
+\usepackage{siunitx}
+\usepackage[format=plain,labelfont=bf]{caption}
+\usepackage{icomma} %Für den korrekten Abstand der Kommas in Dezimalzahlen und in Gleichungen
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm, head=16pt]{geometry}
+\usepackage[headsepline=true, markcase=noupper]{scrlayer-scrpage}   %Regelt alle Einstellung bezüglich Kopf- und Fußzeile
+\usepackage{enumitem}
+\usepackage{fontspec}
+\usepackage[tablegrid,nochapter]{vhistory}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black]{hyperref}       % fügt Hyperlinks in das Inhaltsverzeichnis ein
+\usepackage{pdfpages} % Möglichkeit PDFs anzufügen
+\usepackage{adjustbox}
+\usepackage{tabularx}
+
+
+\allsectionsfont{Arial} % Überschriften in Arial setzen
+\setmainfont{Arial}   % Laden einer Schriftart
+\sectionfont{\large}
+\subsectionfont{\normalsize}
+\subsubsectionfont{\small}
+\captionsetup[table]{position=above}    %verschönert die Abbildungs- und Tabellenbeschriftungen. Für Tabellen werden die Beschriftungen über der Tabelle angezeigt
+\pagestyle{scrheadings}
+\automark{section}
+\ihead{\headmark}
+\chead{}
+\ohead{\pagemark}
+\cfoot{}
+\setlength{\parindent}{0pt}     %Einschub nach Absätzen und Zeilenumbrüchen
+\renewcommand*{\headfont}{\normalfont}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\include{Kapitel/Titelseite}    %include bindet andere .tex Dateien ein und hilft somit bei der Erstellung eines übersichtlichen Dokumentes
+\pagenumbering{gobble}
+\tableofcontents    %erstellt das vollautomatische Inhaltsverzeichnis
+\pagebreak
+
+\pagenumbering{arabic}  %ab hier Seitenzahlen in Arabischen Zahlen
+\listoffigures  %erstellt das Abbildungsverzeichnis
+\pagebreak
+
+\listoftables   %erstellt das Tabellenverzeichnis
+\pagebreak
+
+\include{Kapitel/Historie}
+\include{Kapitel/Themen}
+\include{Kapitel/Glossar}
+\include{Kapitel/Quellenverzeichnis}
+
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

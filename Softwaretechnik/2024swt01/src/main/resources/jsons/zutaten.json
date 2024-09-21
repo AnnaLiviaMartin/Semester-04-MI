@@ -1,0 +1,45 @@
+[ {
+  "name" : "Tomate",
+  "iconPath" : null,
+  "unvertraeglichkeit" : [ {
+    "name" : "Zwiebel",
+    "iconPath" : null,
+    "unvertraeglichkeit" : [ ]
+  } ]
+}, {
+  "name" : "Zwiebel",
+  "iconPath" : null,
+  "unvertraeglichkeit" : [ ]
+}, {
+  "name" : "Käse",
+  "iconPath" : null,
+  "unvertraeglichkeit" : [ {
+    "name" : "Zwiebel",
+    "iconPath" : null,
+    "unvertraeglichkeit" : [ ]
+  } ]
+}, {
+  "name" : "Tomatensauce",
+  "iconPath" : null,
+  "unvertraeglichkeit" : [ {
+    "name" : "Zwiebel",
+    "iconPath" : null,
+    "unvertraeglichkeit" : [ ]
+  } ]
+}, {
+  "name" : "Pilz",
+  "iconPath" : null,
+  "unvertraeglichkeit" : [ {
+    "name" : "Zwiebel",
+    "iconPath" : null,
+    "unvertraeglichkeit" : [ ]
+  } ]
+}, {
+  "name" : "Salami",
+  "iconPath" : null,
+  "unvertraeglichkeit" : [ {
+    "name" : "Zwiebel",
+    "iconPath" : null,
+    "unvertraeglichkeit" : [ ]
+  } ]
+} ]

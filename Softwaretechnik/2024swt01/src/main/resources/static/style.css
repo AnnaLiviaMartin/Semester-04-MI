@@ -1,0 +1,246 @@
+/* ------------------------------ Editor View Styles ------------------------------ */
+
+.speicherButton {
+    -fx-background-color: #5c4a72;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+
+.speicherButton:hover {
+    -fx-background-color: #492f67;
+}
+
+.abbrechenButton {
+    -fx-background-color: white;
+    -fx-text-fill: #5c4a72;
+    -fx-background-radius: 10;
+}
+
+.abbrechenButton:hover {
+    -fx-border-color: #5c4a72;
+    -fx-border-radius: 10;
+}
+
+.plusButton {
+    -fx-background-color: #f3b05a;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+
+.plusButton:hover {
+    -fx-background-color: #f3a01e;
+}
+
+.minusButton {
+    -fx-background-color: #f46a4e;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+
+.minusButton:hover {
+    -fx-background-color: #f43b43;
+}
+
+
+/* ------------------------------ Entnahme View Styles ------------------------------ */
+
+.hover-warenkorb:hover {
+    -fx-cursor: hand;
+}
+
+/* ------------------------------ Main View Styles ------------------------------ */
+
+.headerLeiste {
+    -fx-background-color: #A3596D;
+}
+
+.title {
+    -fx-fill: white;
+    -fx-font-weight: bold;
+}
+
+.headerButtons {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-text-fill: #5C4A72;
+    -fx-font-family: Arial;
+    -fx-font-size: 15;
+    -fx-font-weight: bold;
+}
+
+.headerButtons:hover {
+    -fx-background-color: #ffefdd;
+}
+
+
+/* ------------------------------ Platzierungs View Styles ------------------------------ */
+
+.ausgewaehltes-objekt {
+    -fx-background-color: white;
+}
+
+.auswaehlbares-objekt:hover {
+    -fx-background-color: white;
+}
+
+.zutatHinzufuegenButton {
+    -fx-background-color: #F3B05A;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+
+.zutatHinzufuegenButton:hover {
+    -fx-background-color: #f3a01e;
+}
+
+.fertigstellenButton {
+    -fx-background-color: #F3B05A;
+    -fx-text-fill: white;
+    -fx-font-family: Arial;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+}
+
+.fertigstellenButton:hover {
+    -fx-background-color: #F3A733;
+}
+/* ------------------------------ Regal View Styles ------------------------------ */
+
+/* Regalboden */
+.regalboden {
+    -fx-background-color: #7c5232;
+}
+
+/* Regalwand */
+.regalwand {
+    -fx-background-color: #49311d;
+}
+
+/* Regal */
+.regal {
+    -fx-background-color: black;
+}
+
+/* ------------------------------ Pop Up ------------------------------ */
+/* -> WarenkorbListCell, WarenkorbView, NeueZutatenView */
+
+.popUp {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #5C4A72;
+    -fx-border-width: 2;
+}
+
+.closeButton {
+    -fx-background-color: #F46A4E;
+    -fx-text-fill: white;
+    -fx-font-family: Arial;
+    -fx-font-weight: bold;
+    -fx-font-size: 20;
+    -fx-background-radius: 10;
+}
+
+.closeButton:hover {
+    -fx-background-color: #F45646;
+}
+
+.popUpLeisteOben {
+    -fx-background-color: #5C4A72;
+    -fx-background-radius: 10 10 0 0;
+}
+
+.popUpLeisteUnten {
+    -fx-background-color: #5C4A72;
+    -fx-background-radius: 0 0 10 10;
+}
+
+.popUpUberschrift {
+    -fx-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-family: Arial;
+    -fx-font-size: 30;
+}
+
+
+/* Warenkorb */
+
+.listCellRow {
+    -fx-alignment: center;
+}
+
+.entnahmeAbschliessenButton {
+    -fx-background-color: #F3B05A;
+    -fx-text-fill: white;
+    -fx-font-family: Arial;
+    -fx-font-weight: bold;
+    -fx-font-size: 15;
+    -fx-background-radius: 10;
+}
+
+.entnahmeAbschliessenButton:hover {
+    -fx-background-color: #f3a01e;
+}
+
+/* Neue Zutat erstellen */
+
+.bilderrahmen {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: #A3586D;
+    -fx-border-radius: 10;
+}
+
+.bildHochladenButton {
+    -fx-background-color: #F4874B;
+    -fx-text-fill: white;
+    -fx-font-family: Arial;
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+    -fx-background-radius: 10;
+}
+
+.bildHochladenButton:hover {
+    -fx-background-color: #F47534;
+}
+
+.zutatSpeichernButton {
+    -fx-background-color: #F3B05A;
+    -fx-text-fill: white;
+    -fx-font-family: Arial;
+    -fx-font-weight: bold;
+    -fx-font-size: 15;
+    -fx-background-radius: 10;
+}
+
+.zutatSpeichernButton:hover {
+    -fx-background-color: #f3a01e;
+}
+
+/* ------------------------------ Wiederkehrende Styles ------------------------------ */
+
+.textField {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #A3586D;
+    -fx-border-width: 1;
+}
+
+.ueberschrift {
+    -fx-font-size: 30;
+    -fx-font-weight: bold;
+    -fx-font-family: Arial;
+    -fx-fill: #5c4a72;
+}
+
+.subUeberschrift {
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+    -fx-font-family: Arial;
+    -fx-fill: #5c4a72;
+}
+
+.hintergrund {
+    -fx-background-color: #F3E5C8;
+}

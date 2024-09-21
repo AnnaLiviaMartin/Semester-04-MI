@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
+
+<Pane fx:id="popUpError" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="141.0" prefWidth="600.0" styleClass="popUp" stylesheets="@../static/style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+      <BorderPane layoutX="6.0" prefHeight="141.0" prefWidth="590.0">
+         <center>
+            <Text fx:id="errorText" strokeType="OUTSIDE" strokeWidth="0.0" text="errorMessage" BorderPane.alignment="CENTER" />
+         </center>
+         <right>
+            <Button fx:id="popUpCoseButton" alignment="CENTER_RIGHT" contentDisplay="TOP" mnemonicParsing="false" onAction="#closePopUp" styleClass="closeButton" stylesheets="@../static/style.css" text="X" textAlignment="CENTER" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets right="40.0" />
+               </BorderPane.margin>
+            </Button>
+         </right>
+      </BorderPane>
+    </children>
+</Pane>

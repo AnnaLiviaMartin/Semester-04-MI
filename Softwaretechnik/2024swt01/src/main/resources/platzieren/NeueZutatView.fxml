@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="popUp" stylesheets="@../static/style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-radius: 10;" stylesheets="@../static/style.css">
+            <children>
+                <HBox layoutX="112.0" layoutY="118.0" prefHeight="120.0" prefWidth="155.0" styleClass="bilderrahmen" stylesheets="@../static/style.css">
+                    <children>
+                        <ImageView fx:id="iconZutat" fitHeight="119.0" fitWidth="153.0" pickOnBounds="true" preserveRatio="true" />
+                    </children>
+                </HBox>
+                <TextField fx:id="artZutat" layoutX="291.0" layoutY="160.0" prefHeight="38.0" prefWidth="190.0" promptText="Name der Zutat" styleClass="textField" stylesheets="@../static/style.css" />
+                <Button fx:id="bildHochladenButton" layoutX="136.0" layoutY="246.0" mnemonicParsing="false" onAction="#iconZutatHochladen" prefHeight="38.0" prefWidth="108.0" styleClass="bildHochladenButton" stylesheets="@../static/style.css" text="Bild hochladen" />
+            <HBox prefHeight="81.0" prefWidth="603.0" styleClass="popUpLeisten" stylesheets="@../static/style.css">
+               <children>
+                  <AnchorPane prefHeight="81.0" prefWidth="605.0">
+                     <children>
+                            <Text fx:id="zutatHinzufügen" layoutX="131.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="popUpUberschrift" text="Neue Zutat hinzufügen" textAlignment="CENTER" wrappingWidth="341.2366485595703">
+                                <font>
+                                    <Font size="30.0" />
+                                </font>
+                            </Text>
+                            <Button fx:id="schliessenButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#schliessen" prefHeight="38.0" prefWidth="38.0" styleClass="closeButton" stylesheets="@../static/style.css" text="X" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </HBox>
+            <HBox layoutX="2.0" layoutY="327.0" prefHeight="73.0" prefWidth="600.0" styleClass="popUpLeisten" stylesheets="@../static/style.css">
+               <children>
+                  <AnchorPane prefHeight="73.0" prefWidth="597.0">
+                     <children>
+                            <Button fx:id="speicherButton" layoutX="258.0" layoutY="18.0" mnemonicParsing="false" onAction="#speicherZutat" prefHeight="38.0" prefWidth="99.0" styleClass="zutatSpeichernButton" stylesheets="@../static/style.css" text="Speichern" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </HBox>
+            </children>
+        </AnchorPane>
+    </children>
+</Pane>

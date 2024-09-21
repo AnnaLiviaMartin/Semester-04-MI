@@ -1,0 +1,37 @@
+[ {
+  "breite" : 30.0,
+  "hoehe" : 30.0,
+  "abstandVonLinks" : 0.0,
+  "gewicht" : 3,
+  "tragfaehigkeit" : 3
+}, {
+  "breite" : 60.0,
+  "hoehe" : 60.0,
+  "abstandVonLinks" : 0.0,
+  "gewicht" : 6,
+  "tragfaehigkeit" : 6
+}, {
+  "breite" : 90.0,
+  "hoehe" : 90.0,
+  "abstandVonLinks" : 0.0,
+  "gewicht" : 9,
+  "tragfaehigkeit" : 9
+}, {
+  "breite" : 120.0,
+  "hoehe" : 120.0,
+  "abstandVonLinks" : 0.0,
+  "gewicht" : 12,
+  "tragfaehigkeit" : 12
+}, {
+  "breite" : 70.0,
+  "hoehe" : 70.0,
+  "abstandVonLinks" : 0.0,
+  "gewicht" : 7,
+  "tragfaehigkeit" : 7
+}, {
+  "breite" : 100.0,
+  "hoehe" : 100.0,
+  "abstandVonLinks" : 0.0,
+  "gewicht" : 10,
+  "tragfaehigkeit" : 10
+} ]

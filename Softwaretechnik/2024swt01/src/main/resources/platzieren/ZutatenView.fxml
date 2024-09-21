@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<StackPane prefHeight="150.0" prefWidth="50.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox fx:id="zutatHintergrund" maxHeight="100.0" maxWidth="20.0" styleClass="auswaehlbares-objekt" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+         <children>
+            <ImageView fx:id="zutatImage" fitHeight="99.0" fitWidth="100.0" onMouseClicked="#addSelectedZutatForZutatenpaketCreation" pickOnBounds="true" preserveRatio="true" />
+            <Text fx:id="zutatText" strokeType="OUTSIDE" strokeWidth="0.0" text="Zutat" textAlignment="CENTER" wrappingWidth="100.0" />
+         </children>
+      </VBox>
+   </children>
+</StackPane>

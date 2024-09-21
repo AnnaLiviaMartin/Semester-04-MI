@@ -1,0 +1,52 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.5'
+	id 'io.spring.dependency-management' version '1.1.4'
+	id 'application'
+	id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+group = 'de.hsrm.mi.softwaretechnik'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '21'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.openjfx:javafx-controls:22.0.1'
+	implementation 'org.openjfx:javafx-fxml:22.0.1'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// Initialisierung für JUnit-Testing
+test {
+	useJUnitPlatform()
+	// Show test results.
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
+}
+
+application {
+	mainClass = 'de.hsrm.mi.softwaretechnik.projekt.ProjektApplication'
+}
+
+javafx {
+	version = '22.0.1'
+	modules = ['javafx.controls', 'javafx.fxml']
+
+	//Enable when starting from Mac
+	//platform = 'mac-aarch64'
+}
+
+

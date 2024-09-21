@@ -1,0 +1,82 @@
+{
+  "hoehe" : 776.0,
+  "breite" : 1062.0,
+  "regalwaende" : [ {
+    "id" : "3448013f-295a-4bc2-b498-1780866ee9d5",
+    "xPos" : 0.0,
+    "yPos" : 0.0,
+    "hoehe" : 776.0,
+    "breite" : 25.0,
+    "istGesetzt" : true,
+    "teilVonRahmen" : true,
+    "tragendeRegalboeden" : [ {
+      "type" : "Regalboden",
+      "id" : 1,
+      "hoehe" : 10.0,
+      "uuid" : "7b237e21-dff9-4ab4-a257-236c82a63283",
+      "breite" : 1012.0,
+      "xPos" : 25.0,
+      "yPos" : 0.0,
+      "tragfaehigkeit" : 1000000,
+      "teilVonRahmen" : true,
+      "typ" : "REGALBODEN",
+      "ablageflaeche" : null,
+      "abstandVonLinks" : 0.0
+    }, {
+      "type" : "Regalboden",
+      "id" : 2,
+      "hoehe" : 10.0,
+      "uuid" : "cd39816d-5215-4759-b2b3-5e59ebab0355",
+      "breite" : 1012.0,
+      "xPos" : 25.0,
+      "yPos" : 766.0,
+      "tragfaehigkeit" : 1000000,
+      "teilVonRahmen" : true,
+      "typ" : "REGALBODEN",
+      "ablageflaeche" : null,
+      "abstandVonLinks" : 0.0
+    } ]
+  }, {
+    "id" : "7d1e2fbd-10ff-468d-a114-c2df28de7d40",
+    "xPos" : 1037.0,
+    "yPos" : 0.0,
+    "hoehe" : 776.0,
+    "breite" : 25.0,
+    "istGesetzt" : true,
+    "teilVonRahmen" : true,
+    "tragendeRegalboeden" : [ ]
+  } ],
+  "regalboeden" : [ 1, 2 ],
+  "ablagebereiche" : [ {
+    "id" : "f900fd73-b836-4a38-9859-9b396f725eab",
+    "zutatenpakete" : [ ],
+    "hoehe" : 756.0,
+    "breite" : 1012.0,
+    "posY" : 10.0,
+    "posX" : 25.0,
+    "id" : "4c6d141b-61ac-45e3-a1d2-f786e7f887ec",
+    "untererRegalboden" : 2
+  } ],
+  "regalboden" : 2,
+  "regalDecke" : 1,
+  "aussenwandLinks" : {
+    "id" : "3448013f-295a-4bc2-b498-1780866ee9d5",
+    "xPos" : 0.0,
+    "yPos" : 0.0,
+    "hoehe" : 776.0,
+    "breite" : 25.0,
+    "istGesetzt" : true,
+    "teilVonRahmen" : true,
+    "tragendeRegalboeden" : [ 1, 2 ]
+  },
+  "aussenwandRechts" : {
+    "id" : "7d1e2fbd-10ff-468d-a114-c2df28de7d40",
+    "xPos" : 1037.0,
+    "yPos" : 0.0,
+    "hoehe" : 776.0,
+    "breite" : 25.0,
+    "istGesetzt" : true,
+    "teilVonRahmen" : true,
+    "tragendeRegalboeden" : [ ]
+  }
+}
