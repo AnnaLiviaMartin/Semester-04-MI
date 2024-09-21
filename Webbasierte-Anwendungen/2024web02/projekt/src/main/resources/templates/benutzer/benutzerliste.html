@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Benutzerliste</title>
+    <link th:href="@{/style.css}" rel="stylesheet" type="text/css">
+    <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
+</head>
+<body>
+<!-- header as fragment -->
+<th:block th:replace="~{fragments/kopffuss :: header-content}"></th:block>
+
+<!-- error message as fragment -->
+<th:block th:replace="~{fragments/kopffuss :: error-occurred}"></th:block>
+
+<div class="mainContent">
+    <h1 th:text="#{benutzerliste.titel}">Benutzerliste</h1>
+    <table class="list-style">
+        <thead>
+        <tr>
+            <td th:text="#{benutzer.id}">ID</td>
+            <td th:text="#{benutzer.name}">Name</td>
+            <td th:text="#{benutzer.email}">E-Mail</td>
+            <td th:text="#{benutzer.geburtstag}">Geburtstag</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="ele : ${benutzerListe}">
+            <td th:text="${ele.id}">1</td>
+            <td th:replace="~{/benutzer/benutzerliste-zeile :: feldausgeben(benutzerid=${ele.id},feldname='name',wert=${ele.name})}">Max Mustermann</td>
+            <td th:replace="~{/benutzer/benutzerliste-zeile :: feldausgeben(benutzerid=${ele.id},feldname='email',wert=${ele.email})}">max@mustermann.de</td>
+            <td th:text="${ele.dateOfBirth}">1990-01-01</td>
+            <td>
+                <a th:text="#{benutzerliste.bearbeiten}" th:href="@{/admin/benutzer/{id}(id=${ele.id})}" id="edit-link">Bearbeiten</a>
+                <a th:text="#{benutzerliste.loeschen}" th:href="@{/admin/benutzer/{id}/del(id=${ele.id})}" id="delete-link">Löschen</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:text="#{benutzerliste.neuer.benutzer}" th:href="@{/admin/benutzer/0}" id="neuer-benutzer-link">Neuer Benutzer</a>
+</div>
+
+<!-- footer as fragment -->
+<th:block th:replace="~{fragments/kopffuss :: footer-content}"></th:block>
+</body>
+</html>

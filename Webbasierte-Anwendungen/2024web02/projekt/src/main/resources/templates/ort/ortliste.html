@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ortliste</title>
+    <link th:href="@{/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<!-- header as fragment -->
+<th:block th:replace="~{fragments/kopffuss :: header-content}"></th:block>
+
+<!-- error message as fragment -->
+<th:block th:replace="~{fragments/kopffuss :: error-occurred}"></th:block>
+
+<div class="mainContent">
+    <h1 th:text="#{ortsliste.titel}">Ortliste</h1>
+    <table class="list-style">
+        <thead>
+        <tr>
+            <td th:text="#{ort.id}">ID</td>
+            <td th:text="#{ort.name}">Name</td>
+            <td th:text="#{ort.geobreite}">Breite</td>
+            <td th:text="#{ort.geolaenge}">Länge</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="ele : ${ortListe}">
+            <td th:text="${ele.id}">1</td>
+            <td th:text="${ele.name}">Musterstadt</td>
+            <td th:text="${ele.geobreite}">0.0</td>
+            <td th:text="${ele.geolaenge}">0.0</td>
+            <td>
+                <a th:text="#{ortsliste.eintrag.karte}" th:href="|https://www.openstreetmap.org/#map=14/__${ele.geobreite}__/__${ele.geolaenge}__|" target="_blank">Karte</a>
+                <a th:text="#{ortsliste.eintrag.bearbeiten}" th:href="@{/admin/ort/{id}(id=${ele.id})}" id="edit-link">Bearbeiten</a>
+                <a th:text="#{ortsliste.eintrag.loeschen}" th:href="@{/admin/ort/{id}/del(id=${ele.id})}" id="delete-link">Löschen</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:text="#{ortsliste.neu}" th:href="@{/admin/ort/0}" class="neu-erstellen-link">Neuer Ort</a>
+</div>
+
+<!-- footer as fragment -->
+<th:block th:replace="~{fragments/kopffuss :: footer-content}"></th:block>
+</body>
+</html>

@@ -1,0 +1,71 @@
+propertyname;de;en;nl;it
+;;;;
+# Benutzer-Formular;;;;
+benutzer.name;Name;name;naam;nome
+benutzer.email;E-Mail;E-mail;E-mail;E-mail
+benutzer.passwort;Passwort;password;wachtwoord;parola d'ordine
+benutzer.geburtstag;Geburtstag;date of birth;geboortedatum;data di nascita
+benutzer.magich;Ich mag;I like;Ik hou van;mi piace
+benutzer.magichnicht;Ich mag nicht;I don't like;Ik hou niet van;Non mi piace
+benutzer.id;ID;ID;ID;ID
+benutzerprofil.titel;Benutzerprofil {0} bearbeiten;Edit user profile {0};Gebruikersprofiel {0} bewerken;Modifica profilo utente {0}
+benutzerprofil.titel.neu;Neues Benutzerprofil;New user profile;Nieuw gebruikersprofiel;Nuovo profilo utente
+benutzerprofil.maxwerte;Du kannst jeweils nur {0} Werte eingeben;You can only enter {0} values at a time;U kunt slechts {0} waarden tegelijk invoeren;Puoi inserire solo {0} valori alla volta
+benutzer.passwort.ungesetzt;Passwort wurde noch nicht gesetzt;The password has not yet been set;Het wachtwoord is nog niet ingesteld;La password non è stata ancora impostata
+;;;;
+# GutesPasswort-Validator;;;;
+gutespasswort.fehler;Das ist kein gutes Passwort;This is not a good password;Dit is geen goed wachtwoord;Questa non è una buona password
+guteemail.fehler;Das ist keine gute E-Mail-Adresse;This ist not a good email;Dit is geen goed email;Questa non una buona email
+;;;;
+# Benutzer-Liste;;;;
+benutzerliste.titel;Benutzerliste;all users;alle gebruikers;tutti gli utenti
+benutzerliste.eintrag.bearbeiten;bearbeiten;edit;bewerken;modificare
+benutzerliste.eintrag.loeschen;löschen;delete;wissen;eliminare
+benutzerliste.neu;Neuer Benutzer;new user;nieuw gebruiker;nuovo utente
+benutzerliste.anzahl.angebote;Angebote;offerings;aanbiedingen;offerte
+;;;;
+# Orte;;;;
+ortformular.titel;Ort {0} bearbeiten;Edit place {0};Plaats {0} bewerken;Modifica luogo {0}
+ortformular.titel.neu;Neuen Ort anlegen;Add new place;Nieuwe plaats toevoegen;Aggiungi nuovo posto
+ort.name;Ortsname;location name;plaatsnaam;nome del luogo
+ort.geobreite;Breite;latitude;breedtegraad;latitudine
+ort.geolaenge;Länge;longitude;lengtegraad;longitudine
+ort.link.karte;Karte;map;kaart;carta geografica
+ort.id;ID;ID;ID;ID
+;;;;
+ortsliste.titel;Ortliste;place list;plaatslijst;elenco dei luoghi
+ortsliste.eintrag.bearbeiten;bearbeiten;edit;bewerken;modificare
+ortsliste.eintrag.loeschen;löschen;delete;wissen;eliminare
+ortsliste.eintrag.karte;Karte;map;kaartje;carta geografica
+ortsliste.neu;Neuer Ort;new place;nieuw plaats;nuovo posto
+;;;;
+# Tour;;;;
+tourformular.titel;Tour {0} bearbeiten;Edit tour {0};Toer {0} bewerken;Modifica tour {0}
+tourformular.titel.neu;Neue Tour;New tour;Nieuwe toer;Nuovo giro
+tour.anbieter;Anbieter;Driver;Chauffeur;Autista
+tour.abfahrdatetime;Abfahrtzeitpunkt;departure time;vertrektijd;orario di partenza
+tour.preis;Preis (EUR);price (EUR);prijs (EUR);prezzo (EUR)
+tour.plaetze;Plätze;seats;zitplaatsen;posti a sedere
+tour.startort;Startort;starting location;start locatie;posizione di partenza
+tour.zielort;Zielort;destination;bestemming;destinazione
+tour.fahrgastinfos;Fahrgastinformationen;passenger information;passagiersinformatie;informazioni sui passeggeri
+tour.auswahl.fehlt;Bitte treffen Sie eine Auswahl;please select an item;"selecteer een artikel; aub";seleziona un elemento
+;;;;
+tourliste.titel;Touren;tours;toeren;tour
+tourliste.neu;Neue Tour;new tour;nieuw toer;nuovo giro
+tourliste.eintrag.bearbeiten;bearbeiten;edit;bewerken;modificare
+tourliste.eintrag.loeschen;löschen;delete;wissen;eliminare
+;;;;
+# Header und Footer;;;;
+header.benutzer.titel;Benutzer;user;gebruiker;utente
+header.ort.titel;Ort;place;plaats;posto
+footer.impressum;Impressum;imprint;afdruk;impronta
+footer.kontakt;Kontakt;contact;contact;Contatto
+speicher.fehler;Es ist ein Fehler beim Speichern aufgetreten. Bitte laden Sie die Seite neu!;An error occurred while saving. Please reload the page!;Er is een fout opgetreden tijdens het opslaan. Laad de pagina opnieuw!;Si è verificato un errore durante il salvataggio. Ricaricare la pagina!
+vorschlag.erstellt.info;Vorschlag bitte bestätigen oder ändern.;Please confirm or change proposal.;Bevestig of wijzig het voorstel.;Si prega di confermare o modificare la proposta.
+vorschlag.nicht.erstellt.fehler;Keinen Vorschlag gefunden!;No suggestion found!;Geen suggestie gevonden!;Nessun suggerimento trovato!
+;;;;
+# Benutzerliste Seite;;;;
+benutzerliste.neuer.benutzer;Neuer Benutzer;New user;Nieuwe gebruiker;Nuovo utente
+benutzerliste.bearbeiten;bearbeiten;edit;bewerken;modifica
+benutzerliste.loeschen;löschen;delete;Verwijder;Cancellare

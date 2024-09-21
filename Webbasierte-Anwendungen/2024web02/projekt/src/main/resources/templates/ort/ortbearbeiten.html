@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ort bearbeiten</title>
+    <link th:href="@{/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<!-- header as fragment -->
+<th:block th:replace="~{fragments/kopffuss :: header-content}"></th:block>
+
+<!--th:object zeigt aus welchem object die th:field gefüllt werden-->
+<form th:action="@{#}" method="POST" th:object="${ortform}">
+    <div id="placeholder-for-messages">
+        <!-- error message as fragment -->
+        <th:block th:replace="~{fragments/kopffuss :: error-occurred}"></th:block>
+    </div>
+
+    <div class="mainContent">
+        <h1 th:if="${ortform.id} != 0" th:text="#{ortformular.titel(${ortform.id})}">Ort bearbeiten</h1>
+        <h1 th:if="${ortform.id} == 0" th:text="#{ortformular.titel.neu}">Neuer Ort</h1>
+
+        <div class="formFields">
+            <div class="input-box">
+                <label for="name" class="input-field" th:text="#{ort.name}">Ortsname</label>
+                <input type="text" id="name" class="input" placeholder="Musterstadt" th:field="*{name}"
+                       th:errorclass="wrong-input">
+                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" th:errorclass="error-message">Name
+                    unzureichend</p>
+            </div>
+
+            <div class="input-box">
+                <label for="geobreite" class="input-field" th:text="#{ort.geobreite}">Breite</label>
+                <input type="text" id="geobreite" class="input" placeholder="0.0" th:field="*{geobreite}">
+                <p th:if="${#fields.hasErrors('geobreite')}" th:errors="*{geobreite}" th:errorclass="error-message">
+                    Breite unzureichend</p>
+            </div>
+
+            <div class="input-box">
+                <label for="geolaenge" class="input-field" th:text="#{ort.geolaenge}">Länge</label>
+                <input type="text" id="geolaenge" class="input" placeholder="0.0" th:field="*{geolaenge}">
+                <p th:if="${#fields.hasErrors('geolaenge')}" th:errors="*{geolaenge}" th:errorclass="error-message">
+                    Länge unzureichend</p>
+            </div>
+        </div>
+
+        <div class="button">
+            <button id="submitButton" type="submit">ok</button>
+        </div>
+
+        <div id="mapContainer">
+            <a id="mapLink" th:text="#{ort.link.karte}" href="https://openstreetmap.org"
+               target="_blank">OpenStreetMap</a>
+        </div>
+    </div>
+
+    <!-- footer as fragment -->
+    <th:block th:replace="~{fragments/kopffuss :: footer-content}"></th:block>
+</form>
+</body>
+</html>

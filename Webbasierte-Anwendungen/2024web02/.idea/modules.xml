@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/2024web02.iml" filepath="$PROJECT_DIR$/.idea/2024web02.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/2024web02.projekt.main.iml" filepath="$PROJECT_DIR$/.idea/modules/2024web02.projekt.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/de.hsrm.mi.web.projekt.main.iml" filepath="$PROJECT_DIR$/.idea/modules/de.hsrm.mi.web.projekt.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/projekt.main.iml" filepath="$PROJECT_DIR$/.idea/modules/projekt.main.iml" />
+    </modules>
+  </component>
+</project>

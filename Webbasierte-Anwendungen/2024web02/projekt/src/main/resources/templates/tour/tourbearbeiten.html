@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tour bearbeiten</title>
+    <link th:href="@{/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<th:block th:replace="~{fragments/kopffuss :: header-content}"></th:block>
+<th:block th:replace="~{fragments/kopffuss :: error-occurred}"></th:block>
+
+<form th:action="@{#}" method="POST" th:object="${tourform}">
+    <div id="placeholder-for-messages">
+        <!-- error message as fragment -->
+        <th:block th:replace="~{fragments/kopffuss :: error-occurred}"></th:block>
+    </div>
+
+    <div class="mainContent">
+        <h1 th:if="${tourform.id} != 0" th:text="#{tourformular.titel(${tour.id})}">Tour bearbeiten</h1>
+        <h1 th:if="${tourform.id} == 0" th:text="#{tourformular.titel.neu}">Neue Tour</h1>
+
+        <div class="formFields">
+            <div class="input-box">
+                <label for="anbieter" class="input-field" th:text="#{tour.anbieter}">Anbieter</label>
+                <select name="anbieter" id="anbieter" th:field="*{anbieter}" th:errorclass="wrong-input">
+                    <option th:value="0" th:if="${tourform.id == 0}">-- Bitte wählen --</option>
+                    <option th:each="benutzer : ${benutzerListe}"
+                            th:value="${benutzer.id}"
+                            th:text="${benutzer.name}"
+                            th:selected="${tourform.id != 0 && benutzer.name.equals(tour.benutzer.name)}">
+                    </option>
+                </select>
+                <p th:if="${#fields.hasErrors('anbieter')}" th:errors="*{anbieter}" th:errorclass="error-message">
+                    Anbieter not null</p>
+            </div>
+
+            <div class="input-box">
+                <label for="departureTime" class="input-field" th:text="#{tour.abfahrdatetime}">Abfahrtzeitpunkt</label>
+                <input type="date" class="input" id="departureTime" th:field="*{abfahrDateTime}"
+                       th:errorclass="wrong-input">
+                <p th:if="${#fields.hasErrors('abfahrDateTime')}" th:errors="*{abfahrDateTime}"
+                   th:errorclass="error-message">Abfahrzeit not null</p>
+            </div>
+
+            <div class="input-box">
+                <label for="price" class="input-field" th:text="#{tour.preis}">Preis (EUR)</label>
+                <input type="number" class="input" id="price" th:field="*{preis}" th:errorclass="wrong-input">
+                <p th:if="${#fields.hasErrors('preis')}" th:errors="*{preis}" th:errorclass="error-message">Preis >=
+                    0</p>
+            </div>
+
+            <div class="input-box">
+                <label for="places" class="input-field" th:text="#{tour.plaetze}">Plätze</label>
+                <input type="number" class="input" id="places" th:field="*{plaetze}" th:errorclass="wrong-input">
+                <p th:if="${#fields.hasErrors('plaetze')}" th:errors="*{plaetze}" th:errorclass="error-message">Plätze >
+                    0</p>
+            </div>
+
+            <div class="input-box">
+                <label for="startPoint" class="input-field" th:text="#{tour.startort}">Startort</label>
+                <select name="startPoint" id="startPoint" th:field="*{startOrt}" th:errorclass="wrong-input">
+                    <option th:value="0" th:if="${tourform.id == 0}">-- Bitte wählen --</option>
+                    <option th:each="ort : ${ortListe}"
+                            th:value="${ort.id}"
+                            th:text="${ort.name}"
+                            th:selected="${tourform.id != 0 && ort.name.equals(tour.startOrt.name)}"></option>
+                </select>
+                <p th:if="${#fields.hasErrors('startOrt')}" th:errors="*{startOrt}" th:errorclass="error-message">
+                    Startort not null</p>
+            </div>
+
+            <div class="input-box">
+                <label for="departurePoint" class="input-field" th:text="#{tour.zielort}">Zielort</label>
+                <select name="departurePoint" id="departurePoint" th:field="*{zielOrt}" th:errorclass="wrong-input">
+                    <option th:value="0" th:if="${tourform.id == 0}">-- Bitte wählen --</option>
+                    <option th:each="ort : ${ortListe}"
+                            th:value="${ort.id}"
+                            th:text="${ort.name}"
+                            th:selected="${tourform.id != 0 && ort.name.equals(tour.zielOrt.name)}"></option>
+                </select>
+                <p th:if="${#fields.hasErrors('zielOrt')}" th:errors="*{zielOrt}" th:errorclass="error-message">Zielort
+                    not null</p>
+            </div>
+
+            <div class="input-box">
+                <label for="userInfo" class="input-field" th:text="#{tour.fahrgastinfos}">Fahrgastinformationen</label>
+                <input type="text" class="input" id="userInfo" th:field="*{info}">
+            </div>
+        </div>
+
+        <div class="button">
+            <button id="submitButton" type="submit">ok</button>
+        </div>
+    </div>
+
+    <th:block th:replace="~{fragments/kopffuss :: footer-content}"></th:block>
+
+</form>
+</body>
+</html>

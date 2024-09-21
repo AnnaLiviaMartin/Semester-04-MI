@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Benutzerprofil bearbeiten</title>
+    <link th:href="@{/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<!--th:object zeigt aus welchem object die th:field gefüllt werden-->
+<form th:action="@{#}" method="POST" th:object="${userform}">
+
+    <th:block th:fragment="header-content">
+        <header>
+            <nav id="header-navigation">
+                <ul id="user">
+                    <li id="icon"></li>
+                    <li class="buttons"><a th:text="#{header.benutzer.titel}" th:href="@{/admin/benutzer}">Benutzer</a></li>
+                    <li sec:authorize="hasRole('CHEF')" class="buttons"><a th:text="#{header.ort.titel}" th:href="@{/admin/ort}">Ort</a></li>
+                    <li class="buttons"><a th:text="#{tourliste.titel}" th:href="@{/admin/tour}">Touren</a></li>
+                </ul>
+                <ul id="language-buttons">
+                    <li class="single-language-button"><a class="lang-button" th:href="@{?sprache=de}">DE</a></li>
+                    <li class="single-language-button"><a class="lang-button" th:href="@{?sprache=nl}">NL</a></li>
+                    <li class="single-language-button"><a class="lang-button" th:href="@{?sprache=en}">EN</a></li>
+                    <li class="single-language-button"><a class="lang-button" th:href="@{?sprache=it}">IT</a></li>
+                    <li class="single-language-button"><a class="lang-button" th:href="@{/logout}">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+    </th:block>
+
+    <th:block th:fragment="error-occurred">
+        <div class="error-occurred" th:if="${info} == 'Es ist ein Fehler beim speichern aufgetreten. Bitte laden Sie die Seite neu!'" th:text="#{speicher.fehler}">Fehler aufgetreten</div>
+        <div class="user-info" th:if="${info} == 'Vorschlag bitte bestätigen oder ändern.'" th:text="#{vorschlag.erstellt.info}">Vorschlag bestätigen</div>
+        <div class="error-occurred" th:if="${info} == 'Keinen Vorschlag gefunden!'" th:text="#{vorschlag.nicht.erstellt.fehler}">Fehler aufgetreten</div>
+    </th:block>
+
+    <th:block th:fragment="footer-content">
+        <footer>
+            <nav id="footer-navigation">
+                <ul id="footer-buttons">
+                    <li class="buttons" th:text="#{footer.impressum}"><a>Impressum</a></li>
+                    <li sec:authentication="name">email</li>
+                    <li class="buttons" th:text="#{footer.kontakt}"><a>Kontakt</a></li>
+                </ul>
+            </nav>
+        </footer>
+    </th:block>
+
+</form>
+</body>
+</html>

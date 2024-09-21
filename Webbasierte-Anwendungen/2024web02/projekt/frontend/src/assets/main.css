@@ -1,0 +1,200 @@
+:root {
+    --main-color: #ff9303;
+    --main-color-transparent: #FF930333;
+    --error-background-font: #8B0000FF;
+    --error-head-background-color-shadow: #c04b23;
+    --error-head-background-color: #FF7F50FF;
+    --error-body-background-color: #fbc9c4;
+    --background-color: #ffffff;
+    --border-color: #ddd;
+    --font-color: #ffffff;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.mainContent {
+    margin: 0 30px;
+}
+
+#header-navigation {
+    height: 80px;
+    background-color: var(--main-color);
+
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+}
+
+ul {
+    align-items: center;
+}
+
+li {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+#icon {
+    width: 60px;
+    height: 60px;
+    padding: 5px 0 5px 5px;
+    background-image: url("user_icon.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+}
+
+#user {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+}
+
+#user li {
+    width: 100px;
+    text-align: center;
+}
+
+#language-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.buttons {
+    height: 60px;
+    align-content: center;
+    font-size: 16pt;
+    background-color: transparent;
+    border: none;
+    color: var(--font-color)
+}
+
+.buttons:hover {
+    font-weight: bolder;
+}
+
+.lang-button {
+    color: var(--font-color)
+}
+
+.lang-button:hover {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.single-language-button {
+    width: 60px;
+}
+
+#footer-navigation {
+    margin-top: 60px;
+    height: 60px;
+    background-color: var(--main-color);
+}
+
+.footer-button a {
+    color: var(--font-color);
+}
+
+#footer-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 40px;
+}
+
+#error-head {
+    background-color: var(--error-head-background-color);
+    border-radius: 10px 10px 0 0;
+
+    color: var(--font-color);
+    font-weight: bold;
+
+    margin: 10px 10px 0;
+    padding: 0 30px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#error-body {
+    background-color: var(--error-body-background-color);
+
+    color: var(--error-background-font);
+
+    border-radius: 0 0 10px 10px;
+    margin: 0 10px;
+    padding: 20px 30px;
+    align-content: center;
+}
+
+#close-button {
+    height: 30px;
+    width: 30px;
+    font-size: 16pt;
+    border-radius: 50px;
+    border: none;
+    margin: 10px 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--main-color);
+    float: right;
+}
+
+#close-button:hover {
+    font-weight: bolder;
+    box-shadow: 0 1px 6px var(--error-head-background-color-shadow);
+}
+
+.list-style {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    border-collapse: collapse;
+    width: auto;
+    margin: 30px;
+    table-layout: auto; /* automatische Breitenanpassung der Tabelle */
+}
+
+.list-style td, .list-style thead {
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    /* white-space: nowrap; /* Verhindern von Zeilenumbrüchen */
+}
+
+.list-style tr:nth-child(even) {
+    background-color: var(--background-color);
+}
+
+.list-style th {
+    padding: 12px 5px;
+    text-align: left;
+}
+
+.details-button {
+    background-color: var(--main-color);
+    border-radius: 5px;
+    border-style: none;
+    padding: 5px 10px;
+    color: white;
+}
+
+.details-button:hover {
+    font-weight: bold;
+    padding: 5px 8.5px;
+}
+
+#suchfeld {
+    margin: 50px 30px 0;
+}
+
+#suchfeld input {
+    width: 40%;
+    margin-right: 5px;
+}

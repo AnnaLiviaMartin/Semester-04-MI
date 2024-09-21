@@ -1,0 +1,95 @@
+<!-- 
+  schnipsel.html - Sammlung von Thymeleaf-Fragmenten zur Verwendung
+  in index.html bzw. als Rückgabe-Viewname im @Controller
+-->
+
+
+<!-- --------------------------------------------------- 
+
+  Fragment zur Darstellung einer Tabellenzeile mit Toggel-Button
+  (Tabelle aus serverseitiger Map)
+
+  Parameter: 
+    key = serverseitiger Map-Schlüssel des darzustellenden Map-Eintrags
+    ele = serverseitiges Map-Datenelement zu 'key'
+-->
+
+<tr th:id="|row-${key}|" th:fragment="hxtabellenzeile">
+  <td>
+    <button
+      hx-trigger="click"
+      th:hx-target="|#row-${key}|"
+      hx-swap="outerHTML"
+      th:hx-vals='|{"key":"${key}"}|'
+      th:hx-put="@{/hx/tabellenzeile}"
+    >
+      Toggel
+    </button>
+  </td>
+  <td th:text="${ele.name}">Platzhalter Name</td>
+  <td th:text="${ele.checked? 'ja' : 'nein'}">Platzhalter ja-nein</td>
+</tr>
+
+
+<!-- --------------------------------------------------- 
+  Fragment zur Darstellung der Zahlen-Eingabebox
+-->
+
+<div th:fragment="hxinputchecker" id="hxchkinp">
+  <input type="number" name="eingabe"
+      hx-target="#hxchkinp" 
+      hx-swap="outerHTML"
+      hx-post="/hx/inputchecker"
+      hx-indicator="#inputcheckindicator"
+      >
+      <!-- 
+        dieses Element wird durch die CSS-Klasse 'htmx-indicator'
+        nur sichtbar geschaltet, solange der hx-post-Request oben
+        läuft (Verbindung durch Verweis mit hx-indicator=) 
+      -->
+      <span id="inputcheckindicator" class="htmx-indicator nachdenkstyle">
+        <img src="/tupel48.png" alt="der Tupel">
+        Anfrage an Datenverarbeitungsanlage läuft, bitte warten ...
+      </span>
+      <p>
+        <div th:text="${eingabebeurteilung}" th:class="${classzusatz}">Platzhalter...</div>
+      </p>
+</div>
+
+
+<!-- --------------------------------------------------- 
+  Fragment zur Darstellung des Zähl-Buttons
+-->
+
+<div th:fragment="hxzaehlbutton" id="hxbuttondiv">
+  Fragment 'hxzaehlbutton', zaehlerstand ist 
+  [<span th:text="${zaehlerstand}">Platzhalter Wert</span>]
+  <button 
+    hx-target="#hxbuttondiv" 
+    hx-swap="outerHTML"
+    th:hx-vals='|{"zaehlerstand":"${zaehlerstand}"}|'
+    th:hx-put="@{/hx/zaehlbutton}"
+    >
+    weiterzählen!
+  </button>
+  <span th:text="${zaehlerinfo}">Platzhalter info</span>
+</div>
+
+
+
+<!-- --------------------------------------------------- 
+  Fußzeile-Fragment (aus index.html eingesogen, kein HTMX-Bezug)
+-->
+
+<div th:fragment="nocheinschnipsel">
+  Das hier ist das Thymeleaf-Fragment 'nocheinschnipsel'
+</div>
+
+
+<div th:fragment="schwipp(name)">
+  Oh, <span th:text="${name}"></span> schwippt.
+</div>
+
+<div th:fragment="schwapp(name)">
+  Nun schwappt <span th:text="${name}"></span>.
+</div>

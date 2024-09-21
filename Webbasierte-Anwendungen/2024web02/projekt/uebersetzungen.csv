@@ -1,0 +1,27 @@
+propertyname;de;en;nl;it
+;;;;
+# Benutzer-Formular;;;;
+benutzer.name;Name;Name;Naam;Nome
+benutzer.email;E-Mail;E-mail;E-mail;E-mail
+benutzer.passwort;Passwort;Password;Wachtwoord;Parola d'ordine
+benutzer.geburtstag;Geburtstag;Date of birth;Geboortedatum;Data di nascita
+benutzer.magich;Ich mag;I like;Ik hou van;mi piace
+benutzer.magichnicht;Ich mag nicht;I don't like;Ik hou niet van;Non mi piace
+benutzerprofil.titel;Benutzerprofil {0} bearbeiten;Edit user profile {0};Gebruikersprofiel {0} bewerken;Modifica profilo utente {0}
+benutzerprofil.maxwerte;Du kannst jeweils nur {0} Werte eingeben;You can only enter {0} values at a time;U kunt slechts {0} waarden tegelijk invoeren;Puoi inserire solo {0} valori alla volta
+benutzerprofil.neu;Neues Benutzerprofil;New user profile;Nieuw gebruikersprofiel;Nuovo profilo utente
+;;;;
+# GutesPasswort-Validator;;;;
+gutespasswort.fehler;Das ist kein gutes Passwort;This is not a good password;Dit is geen goed wachtwoord;Questa non una buona password
+guteemail.fehler;Das ist keine gute E-Mail-Adresse;This ist not a good email;Dit is geen goed email;Questa non una buona email
+benutzer.passwort.ungesetzt;Das Passwort muss gesetzt werden;The password must be set;Het wachtwoord moet worden ingesteld;La password deve essere impostata
+;;;;
+# Header und Footer
+header.titel;Benutzer;user;gebruiker;utente
+footer.impressum;Impressum;imprint;afdruk;impronta
+footer.kontakt;Kontakt;contact;contact;Contatto
+# Benutzerliste Seite
+benutzerliste.titel;Benutzerliste;User list;Gebruikerslijst;Elenco utenti
+benutzerliste.neuer.benutzer;Neuer Benutzer;New user;Nieuwe gebruiker;Nuovo utente
+benutzerliste.bearbeiten;bearbeiten;edit;bewerken;modifica
+benutzerliste.loeschen;löschen;delete;Verwijder;Cancellare

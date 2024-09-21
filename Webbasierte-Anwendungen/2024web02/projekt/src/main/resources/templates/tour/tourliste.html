@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tourliste</title>
+    <link th:href="@{/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<th:block th:replace="~{fragments/kopffuss :: header-content}"></th:block>
+<!-- <th:block th:replace="~{fragments/kopffuss :: error-occurred}"></th:block> -->
+
+<div class="mainContent">
+
+    <h1 th:text="#{tourliste.titel}">Tourliste</h1>
+
+    <table class="list-style">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <td th:text="#{tour.abfahrdatetime}">Abfahrtzeitpunkt</td>
+            <td th:text="#{tour.preis}">Preis (EUR)</td>
+            <td th:text="#{tour.plaetze}">Plätze</td>
+            <td th:text="#{tour.startort}">Startort</td>
+            <td th:text="#{tour.zielort}">Zielort</td>
+            <td th:text="#{tour.anbieter}">Anbieter</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="ele : ${tourListe}">
+            <td th:text="${ele.id}">1</td>
+            <td th:text="${ele.abfahrDateTime}">Abfahrtzeitpunkt</td>
+            <td th:text="${ele.preis}">Preis (EUR)</td>
+            <td th:text="${ele.plaetze}">Plätze</td>
+            <td th:text="${ele.startOrt.name}">Startort</td>
+            <td th:text="${ele.zielOrt.name}">Zielort</td>
+            <td th:text="${ele.benutzer.name}">Anbieter</td>
+            <td>
+                <a th:text="#{tourliste.eintrag.bearbeiten}" th:href="@{/admin/tour/{id}(id=${ele.id})}" id="edit-link">Bearbeiten</a>
+                <a th:text="#{tourliste.eintrag.loeschen}" th:href="@{/admin/tour/{id}/del(id=${ele.id})}" id="delete-link">Löschen</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:text="#{tourliste.neu}" th:href="@{/admin/tour/0}" class="neu-erstellen-link">Neue Tour</a>
+
+</div>
+
+<th:block th:replace="~{fragments/kopffuss :: footer-content}"></th:block>
+
+</body>
+</html>

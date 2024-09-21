@@ -1,0 +1,15 @@
+<!-- Fragment für die normale Darstellung -->
+<th:block th:fragment="feldausgeben(benutzerid, feldname, wert)">
+    <td>
+        <span th:text="${wert}" th:hx-get="@{/admin/benutzer/{id}/hx/feld/{feldname}(id=${benutzerid},feldname=${feldname})}" hx-swap="outerHTML" hx-trigger="click" hx-target="closest td"></span>
+    </td>
+</th:block>
+<!--Fragment für die bearbeiten Darstellung-->
+<th:block th:fragment="feldbearbeiten(benutzerid, feldname, wert)">
+    <td>
+        <form>
+            <input type="text" name="wert" class="input" placeholder="Name" th:value="${wert}"/>
+            <button hx-swap="outerHTML" th:hx-put="@{/admin/benutzer/{id}/hx/feld/{feldname}(id=${benutzerid},feldname=${feldname})}" hx-trigger="click" hx-target="closest td" type="submit" id="submitButton">ok</button>
+        </form>
+    </td>
+</th:block>

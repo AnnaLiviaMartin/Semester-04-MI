@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Benutzerprofil bearbeiten</title>
+    <link th:href="@{/style.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<!-- header as fragment -->
+<th:block th:replace="~{fragments/kopffuss :: header-content}"></th:block>
+
+<!--th:object zeigt aus welchem object die th:field gefüllt werden-->
+<form th:action="@{#}" method="POST" th:object="${userform}">
+
+    <div class="mainContent">
+        <div id="placeholder-for-messages">
+            <!-- error message as fragment -->
+            <th:block th:replace="~{fragments/kopffuss :: error-occurred}"></th:block>
+        </div>
+
+        <h1 th:if="${userform.id} != 0" th:text="#{benutzerprofil.titel(${userform.id})}">Benutzerprofil bearbeiten</h1>
+        <h1 th:if="${userform.id} == 0" th:text="#{benutzerprofil.titel.neu}">Neues Benutzerprofil</h1>
+        <!-- need keyword 'required' for input fields? -->
+        <div id="mainContainer">
+            <div class="formFields">
+                <div class="input-box">
+                    <label for="name" class="input-field" th:text="#{benutzer.name}">Name</label>
+                    <input type="text" id="name" class="input" placeholder="Name" th:field="*{name}"
+                           th:errorclass="wrong-input">
+                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" th:errorclass="error-message">Name
+                        unzureichend</p>
+                </div>
+
+                <div class="input-box">
+                    <label for="email" class="input-field" th:text="#{benutzer.email}">E-Mail</label>
+                    <input type="text" id="email" class="input" placeholder="E-Mail" th:field="*{email}"
+                           th:errorclass="wrong-input"> <!--wrong-input is the css id when error occurs-->
+                    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" th:text="#{guteemail.fehler}"
+                       th:errorclass="error-message">E-Mail falsch</p>
+                </div>
+
+                <div class="input-box">
+                    <label for="password" class="input-field" th:text="#{benutzer.passwort}">Passwort</label>
+                    <input type="password" id="password" class="input" th:field="*{password}"
+                           th:errorclass="wrong-input">
+
+                    <p th:if="${#fields.hasErrors('password')}"
+                       th:each="err : ${#fields.errors('password')}"
+                       th:text="#{gutespasswort.fehler}"
+                       th:unless="${err == 'benutzer.passwort.ungesetzt'}"
+                       class="error-message"/>
+
+                    <p th:if="${#fields.hasErrors('password')}"
+                       th:each="err : ${#fields.errors('password')}"
+                       th:text="#{benutzer.passwort.ungesetzt}"
+                       th:unless="${err == 'benutzer.passwort.ungesetzt'}"
+                       class="error-message"/>
+                </div>
+
+                <div class="input-box">
+                    <label for="dateOfBirth" class="input-field" th:text="#{benutzer.geburtstag}">Geburtstag</label>
+                    <input type="date" class="input" id="dateOfBirth" th:field="*{dateOfBirth}"
+                           th:errorclass="wrong-input">
+                    <p th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"
+                       th:errorclass="error-message">
+                        Geburtsdatum doof</p>
+                </div>
+            </div>
+
+
+            <div class="formFields">
+                <div id="likeBox">
+
+                    <label for="like" class="input-field" th:text="#{benutzer.magich}">Das mag ich ...</label>
+                    <h3>(<span th:text="#{benutzerprofil.maxwerte(${userform.maxWunsch})}"></span>)</h3>
+                    <input th:if="${#lists.size(userform.likeThings) < userform.maxWunsch}" type="text" id="like"
+                           class="input" th:field="*{inputLike}">
+                    <table>
+                        <tr th:each="ele,status : ${#lists.sort(userform.likeThings)}">
+                            <td th:text="${ele}">placeholder</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="doNotlikeBox">
+                    <label for="doNotLike" class="input-field" th:text="#{benutzer.magichnicht}">Das mag ich nicht
+                        ...</label>
+                    <h3>(<span th:text="#{benutzerprofil.maxwerte(${userform.maxWunsch})}"></span>)</h3>
+                    <input th:if="${#lists.size(userform.doNotLike) < userform.maxWunsch}" type="text" id="doNotLike"
+                           class="input" th:field="*{inputDoNotLike}">
+                    <table>
+                        <tr th:each="ele,status : ${#lists.sort(userform.doNotLike)}">
+                            <td th:text="${ele}">placeholder</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="button">
+            <button id="submitButton" type="submit">ok</button>
+        </div>
+    </div>
+
+    <!-- footer as fragment -->
+    <th:block th:replace="~{fragments/kopffuss :: footer-content}"></th:block>
+</form>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTMX Demo - Index-Seite</title>
+
+    <!-- htmx.min.js ist in src/main/resources/static/js hinterlegt -->
+    <script defer src="/js/htmx.min.js"></script>
+    <style>
+      .praechtig {
+        background-color: greenyellow;
+      }
+      .beklagenswert {
+        background-color: gray;
+        color: white;
+      }
+      .nachdenkstyle {
+        color: blue;
+        font-style: italic;
+        font-size: large;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>HTMX-Spielwiese</h1>
+
+    <p>
+    Diese Seite enthält verschiedene interaktive
+    Elemente, die mit <a href="https://htmx.org/">HTMX</a>
+    umgesetzt sind. Es werden immer nur die betroffenen
+    Schnipsel der Seite nachgeladen, nicht (wie sonst üblich)
+    jedes Mal die ganze Seite (bitte sehen Sie sich den Datenverkehr
+    Ihres Browsers mal live in den Browser-Entwicklertools an).
+    </p>  
+    <p>
+      Serverseitig stellt ein @Controller unter dem Pfadpräfix /hx/... 
+      verschiedene Handlermethoden bereit, die mit Hilfe von
+      Thymeleaf-Fragmenten die nötigen ausgefüllten
+      HTML-Schnipsel ausliefern. Sie finden
+      die Fragmente (größtenteils) in der schnipsel.html 
+      Datei im templates-Ordner.
+    </p>
+    <p>
+      Debugging-Hinweis: Wenn Sie in der Browser-Console die Funktion
+      "htmx.logAll()" aufrufen, erhalten Sie viel Logging zu allen Aktivitäten
+      von HTMX im Browser.
+    </p>
+
+    <hr>
+    <h2>Nach Klick oder alle 5 Sekunden aktualisierter Zeitstempel</h2>
+    <!-- If you want to stop polling from a server response 
+      you can respond with the HTTP response code 286
+      and the element will cancel the polling. -->
+    <!-- Zeitstempel-Info wird alle n Sekunden frisch vom Server geholt-->
+    <!-- implizit hx-target="innerHTML" (default), Inhalt wird durch GET-Ergebnis ersetzt, nicht der DIV selbst -->
+    <div th:fragment="zeitstempel" 
+         hx-get="/hx/zeitstempel" 
+         hx-trigger="click, every 5s">
+      <span th:text="${zeitstempel}">Zeitstempel</span>
+      [serviert von Thread ID <span th:text="${threadid}"></span>]
+    </div>
+    
+    <hr>
+    <h2>Tabelle aus serverseitiger Map</h2>
+    Map von Map-Einträgen (serverseitiges Session-Objekt), 
+    Button toggelt "checked"-Boolean, verwendet Thymeleaf-Fragment
+    um (nur) geänderte Zeile mit aktualisierter Darstellung zu ersetzen.
+    Dies ist <i>kein</i> rein browserseitiger Anzeige-Effekt, der
+    Server bekommt jeden Button-Klick mit (denn er erzeugt bei HTMX ja
+    die Folgedarstellung), siehe serverseitiges Log.
+    </p>  
+    <table>
+      <tr th:each="e: ${datadict}">
+        <!-- 
+          Platzhalter für 'hxtabellenzeile'-Fragment, je Eintrag e
+          aus datadict wird das hxtabellenzeile-Fratment einmal gerendert,
+          erzeugt jeweils eine Tabellenzeile Inhalt gemäß Parametern key und ele
+        -->
+        <div
+          th:replace="~{schnipsel :: hxtabellenzeile(key=${e.key},ele=${e.value})}"
+        >
+        ...
+        </div>
+      </tr>
+    </table>
+
+    <hr>
+    <h2>Checker für ganze Zahlen</h2>
+    <p>
+      Fragment 'hxinputchecker' - bitte geben Sie eine Zahl ein und drücken Sie [RETURN]. 
+      Die Antwort wird serverseitig um einige Sekunden verzögert, um den Effekt der CSS-Klasse "hxmx-indicator" zu
+      zeigen. Sie können während dieser Zeit aber die anderen interaktiven Elemente der Seite nutzen, sie ist
+      nicht als Ganzes "gesperrt" (vergleiche bisherige "normale" Webseite, wo je Request die ganze Seite neu geladen wird).
+    </p>
+    <div th:replace="~{schnipsel :: hxinputchecker}">platzhalter inputchecker</div>
+
+    <hr />
+    <h2>Zähl-Button</h2>
+      <!-- Zähler-Button Fragment ersetzt dieses Platzhalter-DIV -->
+      <div th:replace="~{schnipsel :: hxzaehlbutton(zaehlerstand=0)}">Platzhalter</div>
+
+    <hr />
+    <h2>Klickbares DIV</h2>
+    <div hx-get="/hx/serverzeit">Klick mich</div>
+
+    <hr>
+    <h2>Listeninhalt wird bei mit mouseenter nachgeladen</h2>
+    <ul hx-get="/hx/mausliste" hx-trigger="mouseenter">
+      <li>Bitte bemausen</li>
+    </ul>
+
+    
+    <hr>
+    <h2>Formular / Params: INPUT mit name und value</h2>
+    <form hx-post="/hx/requestdatenzeigen" hx-target="#ergebnisse" hx-vals='{ "zahl":"17", "optimal":"ja"}'>
+      <input type="hidden" name="versteckt" value="17">
+      <input type="text" name="offen">
+      <input type="submit" value="dersubmit">
+    </form>
+    <ul id="ergebnisse">
+      <li>Hier kommen die Request-Items hin</li>
+    </ul>
+    <p></p>
+    INPUT mit keyup-changed-delay500, Request bei Eingabe nach 500ms ohne neue Taste
+    <p></p>
+    <input name="eingabe"  hx-trigger="keyup changed delay:500ms" hx-post="/hx/requestdatenzeigen" hx-target="#ergebnisse" hx-vals='{"extrainfo":"freistehender input"}'>
+    <p></p>
+    <div hx-post="/hx/requestdatenzeigen" hx-target="#ergebnisse" hx-vals='{"extrainfo":"angeklicktes div"}'>Dies ist ein klickbares DIV mit Parameterübermittlung per hx-vals</div>
+
+    <hr>
+    Zufällige Fragment-Auswahl in Controller, /hx/zufallsfragment
+    <button hx-post="/hx/zufallsfragment" hx-target="#frag">los</button>
+    <div id="frag">
+    </div>
+
+    <hr />
+    <h2>Footer</h2>
+
+    <div th:insert="~{schnipsel :: nocheinschnipsel}">
+      Platzhalter, Inhalt wird ersetzt durch 'nocheinschnipsel'-Fragment
+    </div>
+  </body>
+</html>
